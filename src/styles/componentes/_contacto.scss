@@ -1,0 +1,85 @@
+/*😀*/
+.contacto{
+    width: 600px;
+    height: 350px;
+    background:var(--background);
+    box-shadow: var(--box-shadow);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 15px;
+    margin: 15px 0 15px 0;
+}
+.secflex{
+    display: flex;
+    justify-content: space-evenly;
+}
+.secp{
+    margin: auto 0 auto 0;
+}
+.seccont{
+    width:150px;
+}
+.h2c{
+    max-width: 350px;
+    text-align: center;
+    font-family: var(--fontBilly);
+    font-size: 38px;
+    color: black;
+    margin: auto 0 auto 0;
+    letter-spacing: -1px;
+    word-spacing: 3px;
+    font-weight: 100;
+}
+.secul{
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 0 0 15px 15px;
+}
+.iccon{
+    font-size: 55px;
+    margin: 15px;
+    color: black;
+
+}
+.iccon:hover{
+    color: rgba(0, 0, 0, 0.7);
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 1px 1px 12px 1px rgba(0,0,0,0.6);
+    border-radius: 25px;
+    padding: 10px;
+    margin: 5px;
+    z-index: 10;
+
+}
+@media (max-width:400px) {
+    .contacto{
+        width: 350px;
+        height: 204px;
+        background:rgba(255, 255, 255, 0.3);
+        box-shadow: 1px 1px 12px 0px rgba(0,0,0,0.6);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-radius: 15px;
+    }
+    .seccont{
+        width:70px;
+    }
+    .h2c{
+        max-width: 190px;
+        text-align: center;
+        font-family: var(--fontBilly);
+        font-size: 21px;
+        color: black;
+        margin: auto 0 auto 0;
+    }
+    .iccon{
+        font-size: 30px;
+        margin: 5px;
+    }
+}
+.dark{
+    background: linear-gradient(90deg, hsla(52, 94%, 21%, 1) 0%, hsla(56, 21%, 52%, 1) 100%);
+}

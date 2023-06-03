@@ -1,0 +1,87 @@
+---
+import "../styles/index.css";
+let description =
+  "Agencia de Marketing &amp; Diseño grafico en medios digitales.";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Marketing agency || advertising agency julioricardo95</title>
+
+    <meta name="descripcion" content={description} />
+    <meta
+      name="keywords"
+      content="Publicidad ,Diseño grafico ,contenido digital || imprimibles"
+    />
+    <meta name="author" content="julioricardo95" />
+
+    <meta
+      property="og:title"
+      content="Marketing agency || advertising agency julioricardo95"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://julioricardo95.glitch.me" />
+    <meta
+      property="og:image"
+      content="./public/img/agenciamarketingdigital.webp"
+    />
+    <meta property="og:image:alt" content="Marketing Digital" />
+    <meta property="og:image:width" content="1050" />
+    <meta property="og:image:heigth" content="558" />
+    <meta property="og:description" content={description} />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@julioricardo95" />
+    <meta name="twitter:creator" content="@julioricardo95" />
+
+    <meta
+      name="google-site-verification"
+      content="VHpGuAttmAnHBsIpLH4fUZOpueB0cNhSk1XYRoXBLz0"
+    />
+    <meta
+      name="donaciones para mejorar"
+      content="paypal (julioricardo95@gmail.com)"
+    />
+    <meta name="theme-color" content="lightblue" />
+    <meta name="geo.position" content="12.4752997; -85.658941" />
+    <meta name="geo.region" content="nicaragua boaco" />
+    <meta name="geo.placename" content="julioricardo95" />
+
+    <script src="/script.js" type="module"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100;8..144,400;8..144,500;8..144,1000&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/boxicons@latest/css/boxicons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <!--script(src='https://kit.fontawesome.com/fba790b3f8.js', crossorigin='anonymous')-->
+
+    <script
+      data-ad-client="ca-pub-6158469669133753"
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+    ></script>
+
+    <script src="https://cdn.tailwindcss.com" type="module"></script>
+  </head>
+</html>
+
+<body class="dark-botton">
+  <slot />
+  <div class="whatsapp-bottom">
+    <i class="fa-brands fa-whatsapp whatsapp-bottom-i"></i>
+  </div>
+</body>

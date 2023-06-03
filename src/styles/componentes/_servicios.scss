@@ -1,0 +1,106 @@
+.servicios{
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.servicio{
+	max-width: 550px;
+	padding: 15px 20px 15px 20px;
+	background: var(--background);
+	box-shadow: var(--box-shadow);
+	margin: 30px 10px 30px 10px;
+	border-radius: 15px;
+}
+
+.container{
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap; 
+}
+
+.card{
+	position: relative;
+	width: 410px;
+	height: 240px;
+	margin: 0px auto 30px auto ;
+	border-radius: 20px 20px 20px 20px;
+	background: var(--background);
+	box-shadow: var(--box-shadow);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	transition: 0.5s ease-in-out;
+}
+.card:hover{
+	height: 350px;
+	z-index: 10;
+}
+.imgBox{
+	position: relative;
+	width: 380px;
+	height: 222px;
+	top: -20px;
+	border-radius: 20px 20px 10px 10px;
+	box-shadow: var(--box-shadow);;
+}
+.img{
+	width: 100%;
+	border-radius: 20px 20px 10px 10px;
+	transition: 0.5s ease-in-out;
+}
+.details{
+	position: relative;
+	padding: 10px 17px 10px 17px;
+	//margin: -140;
+	text-align: center;
+	visibility: hidden;
+	opacity: 0;
+	transition: 0.3s ease-in-out;
+}
+.card:hover .details{
+	visibility: visible;
+	opacity: 1;
+}
+.botton_info{
+	width: 80px;
+	color: white;
+	background: lightcoral;
+	padding: 5px ;
+	border-radius: 5px;
+	box-shadow: var(--box-shadow);
+	margin: 5px auto 0 auto;
+	display: block;
+}
+.botton_info:hover{
+	background-color: hsl(0, 50%, 72%);
+}
+@media (max-width:420px) {
+    .servicios{
+        margin: 20px 10px 20px 10px;
+    }
+    
+}
+
+@media  (max-width:400px){
+	.card{
+		width: 320px;
+		height: 180px;
+	}
+	.card:hover{
+		height: 285px;
+	}
+	
+	.imgBox{
+		width: 280px;
+		height: 163px;
+	}
+}
+/*---seccion servicio---*/
+.branding{
+	background:white url(https://secuaz.pe/wp-content/uploads/2020/09/branding.jpg) no-repeat center top ;
+	background-size:cover;
+}

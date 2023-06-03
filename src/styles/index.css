@@ -1,0 +1,544 @@
+@charset "UTF-8";
+/* body */ /*hola mundo*/
+* {
+  box-sizing: border-box;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font-family: "Roboto Flex", Arial, sans-serif, Helvetica;
+  text-decoration: none;
+  list-style: none;
+}
+
+@font-face {
+  font-family: billy;
+  src: url(./BillyOhio.ttf);
+}
+:root {
+  --blu: rgb(75, 169, 233);
+  --blue: rgb(233, 154, 75);
+  --white: hsl(0, 0%, 100%);
+  --h2:clamp(1.8rem, -0.875rem + 8.333333vw, 3rem);
+  --h3:clamp(1.25rem, -0.875rem + 8.333333vw,1.8rem);
+  --p:clamp(1.rem, -0.875rem + 8.333333vw, 1.2rem); /*font-size: max(1.2rem, 1.2vw)*/
+  --font-roboto:"Roboto Flex", sans-serif, Arial, Helvetica;
+  --font-Billy: billy;
+  --box-shadow: 0px 5px 15px 0px rgb(0 0 0 / 30%);
+  --background: rgba(255, 255, 255, 0.3);
+  --backdrop-filter: blur(10px);
+  --margin:15px 30px 15px 30px;
+  --text-shadow: #4147bb;
+}
+
+body {
+  margin: auto;
+  max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(to right top, #4147bb, #485ac6, #536dcf, #607fd8, #6f91df, #69a1e9, #67b0f1, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+  background-attachment: fixed;
+}
+
+h2 {
+  color: var(--white);
+  text-transform: uppercase;
+  font-weight: 900;
+  font-size: var(--h2);
+  text-align: center;
+}
+
+h3 {
+  color: var(--white);
+  text-transform: uppercase;
+  font-weight: 900;
+  font-size: var(--h3);
+}
+
+p {
+  font-family: var(--font);
+  font-size: var(--p);
+  text-align: justify;
+}
+
+/*header*/
+.header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background: white url(/img/oficina.jpg) no-repeat center top;
+  background-size: cover;
+  -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px);
+  min-height: 120px;
+}
+
+.header-navigation {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  box-shadow: 0 5px 5px 1px hsla(17, 22%, 43%, 0.5);
+}
+
+.header-section-flex {
+  padding: 10px 0px 10px 0px;
+  display: flex;
+  align-items: center;
+}
+
+/* --logo-- */
+.header-section-logo {
+  justify-content: center;
+}
+
+.header-logo {
+  width: 50px;
+  height: 50px;
+}
+
+.header-logo:hover {
+  border-radius: 25px;
+  box-shadow: 0px 0px 3px 2px hsla(32, 70%, 34%, 0.5);
+}
+
+/*--logo--*/
+/*
+.header_conten{
+	margin: auto;
+	background: hsla(250, 30%, 80%, 0.2);
+	backdrop-filter: blur(10px);
+	border-radius: 25px;
+	padding: 15px;
+}
+.header_conten_h1{
+	color: rgb(130, 137, 236);
+	text-shadow: var(--text-shadow);
+	font-size: clamp(4rem, 5vw, 6rem);
+
+	color: transparent;
+	background: #666666;
+	background-clip: text;
+	text-shadow: 0px 3px 3px rgba(255,255,255,0.5);
+}
+*/
+/*barra de navegacion inicio*/
+.header-section-ul {
+  display: flex;
+  align-items: center;
+}
+
+.header-section-a {
+  background: hsla(16, 12%, 59%, 0.4);
+  box-shadow: 0 2px 2px 1px hsla(16, 50%, 25%, 0.3);
+  padding: 5px 10px 5px 10px;
+  margin: 0 10px 0 0;
+  border-radius: 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  transition: all 0.5s ease;
+  text-align: center;
+}
+
+.header-section-a:hover {
+  background: hsla(16, 12%, 10%, 0.4);
+  box-shadow: 0 2px 2px 1px hsla(16, 50%, 10%, 0.3);
+  color: hsl(0, 0%, 80%);
+  transition: all 0.7s ease;
+}
+
+#menu-icon {
+  font-size: 35px;
+  color: hsl(0, 0%, 100%);
+  cursor: pointer;
+  z-index: 10001;
+  margin: auto 0 auto 0;
+  font-weight: bold;
+  display: none;
+}
+
+#menu-icon:hover {
+  color: hsl(0, 0%, 60%);
+}
+
+@media (max-width: 700px) {
+  #menu-icon {
+    display: block;
+  }
+  .header-section-ul {
+    display: none;
+    transition: all 0.5s ease;
+  }
+  /*.header-section-ul*/
+  .open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 5%;
+    background: hsla(16, 12%, 15%, 0.3);
+    border-radius: 20px;
+    padding: 10px 2px 10px 2px;
+    top: 120%;
+    filter: blur(0px);
+  }
+  .header-section-li {
+    margin: 5px auto 1px auto;
+  }
+  .header-section-a {
+    background: hsla(16, 12%, 15%, 0.6);
+    padding: 1px 10px 1px 10px;
+    margin: auto;
+    font-size: 1.3rem;
+    display: block;
+  }
+  .header-flex {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-mg-i {
+    padding: 4px 4px 4px 4px;
+    border-radius: 3px;
+  }
+}
+/*barra de navegacion fin*/
+/*--------------------*/
+/*servicios*/
+.servicios {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.servicio {
+  max-width: 550px;
+  padding: 15px 20px 15px 20px;
+  background: var(--background);
+  box-shadow: var(--box-shadow);
+  margin: 30px 10px 30px 10px;
+  border-radius: 15px;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  position: relative;
+  width: 410px;
+  height: 240px;
+  margin: 0px auto 30px auto;
+  border-radius: 20px 20px 20px 20px;
+  background: var(--background);
+  box-shadow: var(--box-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: 0.5s ease-in-out;
+}
+
+.card:hover {
+  height: 350px;
+  z-index: 10;
+}
+
+.imgBox {
+  position: relative;
+  width: 380px;
+  height: 222px;
+  top: -20px;
+  border-radius: 20px 20px 10px 10px;
+  box-shadow: var(--box-shadow);
+}
+
+.img {
+  width: 100%;
+  border-radius: 20px 20px 10px 10px;
+  transition: 0.5s ease-in-out;
+}
+
+.details {
+  position: relative;
+  padding: 10px 17px 10px 17px;
+  text-align: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.3s ease-in-out;
+}
+
+.card:hover .details {
+  visibility: visible;
+  opacity: 1;
+}
+
+.botton_info {
+  width: 80px;
+  color: white;
+  background: lightcoral;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: var(--box-shadow);
+  margin: 5px auto 0 auto;
+  display: block;
+}
+
+.botton_info:hover {
+  background-color: hsl(0, 50%, 72%);
+}
+
+@media (max-width: 420px) {
+  .servicios {
+    margin: 20px 10px 20px 10px;
+  }
+}
+@media (max-width: 400px) {
+  .card {
+    width: 320px;
+    height: 180px;
+  }
+  .card:hover {
+    height: 285px;
+  }
+  .imgBox {
+    width: 280px;
+    height: 163px;
+  }
+}
+/*---seccion servicio---*/
+.branding {
+  background: white url(https://secuaz.pe/wp-content/uploads/2020/09/branding.jpg) no-repeat center top;
+  background-size: cover;
+}
+
+/*ooooooo*/
+/*quienes somos*/
+.sec_flex {
+  display: flex;
+  justify-content: space-around;
+  align-self: stretch;
+  align-content: center;
+  background: var(--background);
+  box-shadow: var(--box-shadow);
+  margin: 20px 20px 0px 20px;
+  border-radius: 15px;
+}
+
+@media (max-width: 700px) {
+  .sec_flex {
+    flex-direction: column;
+  }
+}
+.secqs_margin {
+  max-width: 600px;
+  margin: auto;
+}
+
+.julioricardo95 {
+  padding: 15px 20px 15px 20px;
+  text-align: justify;
+  background: var(--background);
+  box-shadow: var(--box-shadow);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  border-radius: 10px;
+  margin: 15px 0 15px 7px;
+}
+
+.imgqs {
+  width: 100%;
+}
+
+@media (max-width: 420px) {
+  .sec_flex {
+    margin: 20px 10px 20px 10px;
+  }
+  .julioricardo95 {
+    padding: 10px 10px 10px 10px;
+  }
+}
+/*contacto*/
+/*😀*/
+.contacto {
+  width: 600px;
+  height: 350px;
+  background: var(--background);
+  box-shadow: var(--box-shadow);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 15px;
+  margin: 15px 0 15px 0;
+}
+
+.secflex {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.secp {
+  margin: auto 0 auto 0;
+}
+
+.seccont {
+  width: 150px;
+}
+
+.h2c {
+  max-width: 350px;
+  text-align: center;
+  font-family: var(--fontBilly);
+  font-size: 38px;
+  color: black;
+  margin: auto 0 auto 0;
+  letter-spacing: -1px;
+  word-spacing: 3px;
+  font-weight: 100;
+}
+
+.secul {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 0 0 15px 15px;
+}
+
+.iccon {
+  font-size: 55px;
+  margin: 15px;
+  color: black;
+}
+
+.iccon:hover {
+  color: rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 1px 1px 12px 1px rgba(0, 0, 0, 0.6);
+  border-radius: 25px;
+  padding: 10px;
+  margin: 5px;
+  z-index: 10;
+}
+
+@media (max-width: 400px) {
+  .contacto {
+    width: 350px;
+    height: 204px;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 1px 1px 12px 0px rgba(0, 0, 0, 0.6);
+    -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 15px;
+  }
+  .seccont {
+    width: 70px;
+  }
+  .h2c {
+    max-width: 190px;
+    text-align: center;
+    font-family: var(--fontBilly);
+    font-size: 21px;
+    color: black;
+    margin: auto 0 auto 0;
+  }
+  .iccon {
+    font-size: 30px;
+    margin: 5px;
+  }
+}
+.dark {
+  background: linear-gradient(90deg, hsl(52, 94%, 21%) 0%, hsl(56, 21%, 52%) 100%);
+}
+
+/*footer*/
+.code {
+  display: grid;
+  gap: 1rem;
+  grid-auto-rows: 22rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem)), 1fr);
+}
+
+.footer-grid-flex {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 1rem;
+}
+
+/*
+.footerfont{
+	padding-left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+    list-style: none;
+    display: flex;
+}
+.font{
+    flex: auto;
+    text-align: center;
+}
+/*--------------------
+.imagen{
+	width: 100%;
+}
+.caja{
+	box-sizing: border-box;
+	display: inline-block;
+	padding: 1rem;
+	width: 300px;
+	text-align: center;
+}
+.pcentro{
+	text-align: center;
+	list-style: none;
+}
+*/
+/*whatsapp*/
+.whatsapp-bottom {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  background-color: coral;
+  width: 30px;
+  height: 30px;
+}
+
+.whatsapp-bottom-i {
+  font-size: 2rem;
+}
+
+.rotate-diagonal-1 {
+  animation: rotate-diagonal-1 0.4s linear both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2023-5-31 22:8:14
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+/**
+ * ----------------------------------------
+ * animation rotate-diagonal-1
+ * ----------------------------------------
+ */
+@keyframes rotate-diagonal-1 {
+  0% {
+    transform: rotate3d(1, 1, 0, 0deg);
+  }
+  50% {
+    transform: rotate3d(1, 1, 0, -180deg);
+  }
+  100% {
+    transform: rotate3d(1, 1, 0, -360deg);
+  }
+}
