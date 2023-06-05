@@ -1,41 +1,87 @@
-.code{
+/*vision*/
+.section-vision-grid{
     display: grid;
-    gap: 1rem;
-    grid-auto-rows: 22rem;
-    grid-template-columns: repeat(auto-fill,minmax(min(100%,15rem)) ,1fr);
+    grid-template-columns: 1fr 1fr;
 }
-.footer-grid-flex{
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(min(100%,15rem),1fr));
-    gap: 1rem;
+.section-vision-mg{
+    padding: 20px;
 }
-
-
-/*
-.footerfont{
-	padding-left: 0;
-	margin-top: 0;
-	margin-bottom: 0;
-    list-style: none;
+.div-vision-mg{
+    max-width: 450px;
+    margin: 20px;
+}
+.section-vision-flex{
     display: flex;
+    align-items: center;
 }
-.font{
-    flex: auto;
-    text-align: center;
+.vision-i{
+    color: white;
+    font-size: 30px;
+    margin: 10px
 }
-/*--------------------
-.imagen{
-	width: 100%;
+@media (max-width:450px){
+    .section-vision-grid{
+        grid-template-columns: 1fr;
+    }
+    .section-vision-mg{
+        padding: 5px;
+    }
+    .div-vision-mg{
+        margin: 10px;
+    }
+    .vision-i{
+        margin: 0px 5px 0px 0px ;
+        font-size: 20px;
+    }
 }
-.caja{
-	box-sizing: border-box;
-	display: inline-block;
-	padding: 1rem;
-	width: 300px;
-	text-align: center;
-}
-.pcentro{
-	text-align: center;
-	list-style: none;
-}
+
+
+/*footer
+display: grid;
+grid-template-columns: repeat(auto-fill,minmax(min(100%,15rem),1fr));
+gap: 1rem;
+
 */
+.footer-grid-flex{
+    display: flex;
+
+}
+.footer-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: aqua;
+    aspect-ratio: 3/4;
+    width: 250px;
+    margin: 20px;
+    padding: 15px;
+    border-radius: 15px;
+}
+.footer-card-center{
+    align-items: center;
+}
+.footer-img{
+    width: 120px;
+}
+
+
+/*Credits
+
+*/
+.section-credits{
+    border-radius: 20px 20px 0px 0px;
+}
+.section-credits-flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 340px;
+    
+}
+.credits-img{
+    width: 45px;
+    margin: 5px;
+}
+.credits-span{
+    font-size: medium;
+}
