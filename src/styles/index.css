@@ -511,16 +511,18 @@ gap: 1rem;
 */
 .footer-grid-flex {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .footer-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: aqua;
+  background-color: rgba(255, 255, 255, 0.2);
   aspect-ratio: 3/4;
-  width: 250px;
-  margin: 20px;
+  width: 280px;
+  margin: 10px;
   padding: 15px;
   border-radius: 15px;
 }
@@ -531,6 +533,32 @@ gap: 1rem;
 
 .footer-img {
   width: 120px;
+}
+
+.footer-flex-ul {
+  display: flex;
+}
+
+.footer-block-a {
+  display: block;
+  font-size: 1rem;
+  color: black;
+  margin: 0px 0px 0px 5px;
+}
+
+.footer-div-4-flex {
+  display: flex;
+  justify-content: space-around;
+}
+
+.footer-div-4-i {
+  color: black;
+  margin: 3px;
+  font-size: 1.3rem;
+}
+
+.footer-div-4-i:hover {
+  color: rgba(68, 68, 68, 0.445);
 }
 
 /*Credits
@@ -559,15 +587,24 @@ gap: 1rem;
 /*whatsapp*/
 .whatsapp-bottom {
   position: fixed;
-  right: 10px;
-  bottom: 10px;
-  background-color: coral;
+  right: 20px;
+  bottom: 15%;
+  border-radius: 50%;
   width: 30px;
   height: 30px;
 }
 
 .whatsapp-bottom-i {
-  font-size: 2rem;
+  border-radius: 50%;
+  background: rgba(172, 255, 47, 0.3);
+  margin: auto;
+  font-size: 3rem;
+  color: green;
+  animation: rotate-diagonal-1 3s ease-in infinite;
+}
+
+.whatsapp-bottom-i:hover {
+  transform: scale(1.2);
 }
 
 .rotate-diagonal-1 {
@@ -587,12 +624,12 @@ gap: 1rem;
  */
 @keyframes rotate-diagonal-1 {
   0% {
-    transform: rotate3d(1, 1, 0, 0deg);
+    transform: rotate3d(0, 1, 0, 0deg);
   }
   50% {
-    transform: rotate3d(1, 1, 0, -180deg);
+    transform: rotate3d(0, 1, 0, -180deg);
   }
   100% {
-    transform: rotate3d(1, 1, 0, -360deg);
+    transform: rotate3d(0, 1, 0, -360deg);
   }
 }

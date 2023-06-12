@@ -44,16 +44,18 @@ gap: 1rem;
 */
 .footer-grid-flex{
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
 }
 .footer-card{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: aqua;
+    background-color: rgba(255, 255, 255, 0.2);
     aspect-ratio: 3/4;
-    width: 250px;
-    margin: 20px;
+    width: 280px;
+    margin: 10px;
     padding: 15px;
     border-radius: 15px;
 }
@@ -63,8 +65,27 @@ gap: 1rem;
 .footer-img{
     width: 120px;
 }
-
-
+.footer-flex-ul{
+    display: flex;
+}
+.footer-block-a{
+    display: block;
+    font-size: 1rem;
+    color:black;
+    margin: 0px 0px 0px 5px;
+}
+.footer-div-4-flex{
+    display: flex;
+    justify-content: space-around;
+}
+.footer-div-4-i{
+    color: black;
+    margin: 3px;
+    font-size: 1.3rem;
+}
+.footer-div-4-i:hover{
+    color: rgba(68, 68, 68, 0.445);
+}
 /*Credits
 
 */

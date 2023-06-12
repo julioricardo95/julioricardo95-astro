@@ -1,13 +1,24 @@
 .whatsapp-bottom{
     position: fixed;
-    right: 10px;
-    bottom: 10px;
-    background-color: coral;
+    right: 20px;
+    bottom: 15%;
+    border-radius: 50%;
     width: 30px;
     height: 30px;
 }
 .whatsapp-bottom-i{
-  font-size: 2rem;
+  border-radius: 50%;
+  background: rgba(172, 255, 47, 0.3);
+  margin: auto;
+  font-size: 3rem;
+  color: green;
+  animation: rotate-diagonal-1 3s ease-in infinite;
+  }
+.whatsapp-bottom-i:hover{
+  transform: scale(1.2);
+}
+@media (max-width:450px) {
+  
 }
 .rotate-diagonal-1 {
 	-webkit-animation: rotate-diagonal-1 0.4s linear both;
@@ -41,16 +52,13 @@
   }
   @keyframes rotate-diagonal-1 {
     0% {
-      -webkit-transform: rotate3d(1, 1, 0, 0deg);
-              transform: rotate3d(1, 1, 0, 0deg);
+              transform: rotate3d(0, 1, 0, 0deg);
     }
     50% {
-      -webkit-transform: rotate3d(1, 1, 0, -180deg);
-              transform: rotate3d(1, 1, 0, -180deg);
+              transform: rotate3d(0, 1, 0, -180deg);
     }
     100% {
-      -webkit-transform: rotate3d(1, 1, 0, -360deg);
-              transform: rotate3d(1, 1, 0, -360deg);
+              transform: rotate3d(0, 1, 0, -360deg);
     }
   }
   
