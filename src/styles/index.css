@@ -5,7 +5,7 @@
   border: 0;
   padding: 0;
   margin: 0;
-  font-family: "Roboto Flex", Arial, sans-serif, Helvetica;
+  font-family: "Roboto Condensed", Arial, sans-serif, Helvetica;
   text-decoration: none;
   list-style: none;
 }
@@ -13,6 +13,7 @@
 @font-face {
   font-family: billy;
   src: url(./BillyOhio.ttf);
+  font-family: "Roboto Condensed", sans-serif;
 }
 :root {
   --blu: rgb(75, 169, 233);
@@ -21,7 +22,7 @@
   --h2:clamp(1.8rem, -0.875rem + 8.333333vw, 3rem);
   --h3:clamp(1.25rem, -0.875rem + 8.333333vw,1.8rem);
   --p:clamp(1.rem, -0.875rem + 8.333333vw, 1.2rem); /*font-size: max(1.2rem, 1.2vw)*/
-  --font-roboto:"Roboto Flex", sans-serif, Arial, Helvetica;
+  --font-roboto:"Roboto Flex", Arial, sans-serif, Helvetica;
   --font-Billy: billy;
   --box-shadow: 0px 5px 15px 0px rgb(0 0 0 / 30%);
   --background: rgba(255, 255, 255, 0.3);
@@ -685,4 +686,4 @@ gap: 1rem;
 --h2:clamp(1.8rem, -0.875rem + 8.333333vw, 3rem);
 	--h3:clamp(1.25rem, -0.875rem + 8.333333vw,1.8rem);
 	--p:clamp(1.rem, -0.875rem + 8.333333vw, 1.2rem); 
-*/
+*//*# sourceMappingURL=index.css.map */

@@ -1,0 +1,26 @@
+[
+  {
+    "title": "vitrina en caliente",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem a expedita suscipit, id, distinctio numquam laborum nihil quae officiis quod repellat hic animi optio nam, accusamus voluptates rem praesentium sed?",
+    "img": "vitrina_en_caliente.png",
+    "price": 1
+  },
+  {
+    "title": "horno a gas de conveccion",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem a expedita suscipit, id, distinctio numquam laborum nihil quae officiis quod repellat hic animi optio nam, accusamus voluptates rem praesentium sed?",
+    "img": "horno_a_gas.png",
+    "price": 2
+  },
+  {
+    "title": "wafflera de burbuja",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem a expedita suscipit, id, distinctio numquam laborum nihil quae officiis quod repellat hic animi optio nam, accusamus voluptates rem praesentium sed?",
+    "img": "wafflera.png",
+    "price": 77
+  },
+  {
+    "title": "maquina para cafe expresso",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem a expedita suscipit, id, distinctio numquam laborum nihil quae officiis quod repellat hic animi optio nam, accusamus voluptates rem praesentium sed?",
+    "img": "cafe_expresso.png",
+    "price": 95
+  }
+]

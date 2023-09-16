@@ -1,0 +1,46 @@
+{
+  "lang": "es",
+  "name": "julioricardo95 dev",
+  "short_name": "julioricardo95",
+  "description": "welcomeAgencia de Marketing &amp; Diseño grafico en medios digitales.",
+  "icons": [
+    {
+      "src": "img/icon/16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "img/icon/20.png",
+      "type": "image/png",
+      "sizes": "20x20"
+    },
+    {
+      "src": "img/icon/29.png",
+      "type": "image/png",
+      "sizes": "29x29"
+    },
+    {
+      "src": "img/icon/144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    }
+  ],
+  "scope":"/",
+  "id":"publicidad",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "aliceblue",
+  "background_color": "skyblue",
+  "related_applications": [
+    {
+      "platform": "web"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+publicidad",
+      "url": "./?publicidad=%s"
+    }
+  ]
+}

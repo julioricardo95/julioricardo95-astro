@@ -1,0 +1,143 @@
+---
+   import mundo from '../../public/mundo.json'
+
+
+---
+
+    {  
+        mundo.map((mundos) => (
+            <div  class="v2-laptop-card style-laptop-card margin">
+                <h2 class="v2-h2-laptop-card style-h2-laptop-card">{mundos.title}</h2>
+                
+                <img class="v2-img-laptop-card" src={"/img/mundoLoco/"+mundos.img} alt={mundos.title}>
+                
+                <ul class="v2-ul-laptop-card style-ul-laptop-card ">
+                    <li class="v2-li-laptop-card">credex</li>
+                    <li class="v2-li-laptop-card">logo</li>
+                    <li class="v2-li-laptop-card">whatsapp</li>
+                </ul>
+                <span class="v2-span-laptop-card">${mundos.price}</span>
+                <span class="descripcion">{mundos.description}</span>
+
+            </div>
+        ))
+    }
+
+
+
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica;
+    }
+    :root{
+        --biolet: hsl(290, 50%, 50%);
+        --white: hsl(0, 0%, 100%);
+        --h2:clamp(1.8rem, -0.875rem + 8.333333vw, 3rem);
+        --h3:clamp(1.25rem, -0.875rem + 8.333333vw,1.8rem);
+        --p:clamp(1rem, -0.875rem + 8.333333vw, 1.2rem);            /*font-size: max(1.2rem, 1.2vw)*/
+        --font-roboto:'Roboto Flex', sans-serif, Arial, Helvetica;
+        --box-shadow: 0px 5px 15px 0px rgb(0 0 0 / 30%);
+        --border-box: 20px
+        --background: rgba(255, 255, 255, 0.3);
+        --backdrop-filter: blur(10px);
+        --margin:15px 30px 15px 30px;
+        --text-shadow: #4147bb; 
+    }
+    body{
+        display: flex;
+       flex-wrap: wrap;
+    }
+    .margin{
+        margin: 10px;
+    }
+
+    .v2-laptop-card{
+        position: relative;
+        width: 420px;
+        height: 285px;
+        background-color:orange;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+    }
+
+
+    .v2-h2-laptop-card{
+        font-size: 2rem;
+        text-transform: capitalize;
+        font-weight: 500;
+        padding: 5px;
+        text-align: center;
+    }
+
+
+    .v2-ul-laptop-card{
+        width: 400px;
+        margin: auto;
+        background-color: aqua;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        POSITION: ABSOLUTE;
+        BOTTOM: 5%;
+       
+    }
+
+
+    .v2-li-laptop-card{
+        list-style: none;
+        margin: 0px 0 0px 0 ;
+        background-color: chartreuse;
+        display: flex;
+        align-items: center;
+    }
+    .v2-li-laptop-card::before{
+        content:url('../../img/favicon.svg');
+        display: inline-block;
+        width: 25px;
+        margin: 1px 4px 1px 0 ;
+    }
+
+
+    .v2-img-laptop-card{
+        margin: auto;
+        position: absolute;
+        width: 230px;
+        margin: 10px 0 10px 0px ;
+        top: 25%;
+    }
+
+
+
+
+    .v2-span-laptop-card{
+        display: inline-block;
+        position: absolute;
+        bottom: 40%;
+        left: 10%;
+        font-size: 2.5rem;
+    }
+    .v2-span-laptop-card::before{
+        content: 'Precio';
+        display: block;
+        font-size: 15px;
+    }
+    .v2-span-laptop-card::after{
+        content:'+IVA';
+        display: block;
+        font-size: 10px;
+        margin: 0 0 0 30px;
+    }
+    .descripcion{
+        position: absolute;
+        background-color: #4147bb;
+        width: 500px;
+        height: 285px;
+        z-index: 10;
+        display: none;
+    }
+</style>
