@@ -1,31 +1,27 @@
 ---
-   import mundo from '../../public/mundo.json'
-
-
+import mundoloco from '../../public/mundoloco.json'
 ---
-
     {  
-        mundo.map((mundos) => (
+        mundoloco.map((mundos) => (
             <div  class="v2-laptop-card style-laptop-card margin">
                 <h2 class="v2-h2-laptop-card style-h2-laptop-card">{mundos.title}</h2>
                 
                 <img class="v2-img-laptop-card" src={"/img/mundoLoco/"+mundos.img} alt={mundos.title}>
-                
+                 
                 <ul class="v2-ul-laptop-card style-ul-laptop-card ">
                     <li class="v2-li-laptop-card">credex</li>
                     <li class="v2-li-laptop-card">logo</li>
                     <li class="v2-li-laptop-card">whatsapp</li>
                 </ul>
-                <span class="v2-span-laptop-card">${mundos.price}</span>
+                <span class="v2-span-laptop-card">{mundos.price}</span>
                 <span class="descripcion">{mundos.description}</span>
 
             </div>
         ))
     }
 
-
-
 <style>
+    /* style iniciales */
     *{
         margin: 0;
         padding: 0;
@@ -48,7 +44,9 @@
     }
     body{
         display: flex;
-       flex-wrap: wrap;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: center;
     }
     .margin{
         margin: 10px;
@@ -65,7 +63,6 @@
         
     }
 
-
     .v2-h2-laptop-card{
         font-size: 2rem;
         text-transform: capitalize;
@@ -73,7 +70,6 @@
         padding: 5px;
         text-align: center;
     }
-
 
     .v2-ul-laptop-card{
         width: 400px;
@@ -84,9 +80,7 @@
         justify-content: space-around;
         POSITION: ABSOLUTE;
         BOTTOM: 5%;
-       
     }
-
 
     .v2-li-laptop-card{
         list-style: none;
@@ -95,6 +89,7 @@
         display: flex;
         align-items: center;
     }
+
     .v2-li-laptop-card::before{
         content:url('../../img/favicon.svg');
         display: inline-block;
@@ -102,17 +97,13 @@
         margin: 1px 4px 1px 0 ;
     }
 
-
     .v2-img-laptop-card{
         margin: auto;
         position: absolute;
-        width: 230px;
+        width: 200px;
         margin: 10px 0 10px 0px ;
         top: 25%;
     }
-
-
-
 
     .v2-span-laptop-card{
         display: inline-block;
@@ -121,17 +112,20 @@
         left: 10%;
         font-size: 2.5rem;
     }
+
     .v2-span-laptop-card::before{
         content: 'Precio';
         display: block;
         font-size: 15px;
     }
+
     .v2-span-laptop-card::after{
         content:'+IVA';
         display: block;
         font-size: 10px;
         margin: 0 0 0 30px;
     }
+
     .descripcion{
         position: absolute;
         background-color: #4147bb;
@@ -140,4 +134,34 @@
         z-index: 10;
         display: none;
     }
+
+    /* style */
+
+    .v2-ul-laptop-card{
+        background-color: rgba(255, 255, 255, 0.2); 
+    }
+    
+    .v2-li-laptop-card{
+        background-color: rgba(255, 255, 255, 0.4);
+        padding: 0 5px 0 5px;
+        border-radius: 5px;
+    }
+    .v2-li-laptop-card:hover{
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+    .v2-span-laptop-card{
+      background: rgba(255, 255, 255, 0.4);
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .v2-laptop-card{
+        position: relative;
+        width: 420px;
+        height: 285px;
+        background-color:rgba(185, 185, 185, 0.8);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+       
 </style>

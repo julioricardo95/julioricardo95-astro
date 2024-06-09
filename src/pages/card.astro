@@ -1,6 +1,23 @@
 ---
-import Card from "../layouts/card_v1.astro";
-
+import Layouts from "../layouts/layouts copy.astro";
+import CardV1 from "../layouts/card_v1.astro";
+import CardV2 from "../layouts/card_v2.astro";
 ---
 
-<Card/>
+<Layouts>
+    <section>
+        <CardV1 />
+    </section>
+    
+    <section>
+        <CardV2 />
+    </section>
+    
+    <style>
+        section{     
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;}
+    </style>
+    
+</Layouts>
