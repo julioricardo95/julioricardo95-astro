@@ -3,17 +3,68 @@ import yummy from '../../public/yummy.json'
 ---
   {
     yummy.map((frituras) => (
-        <div  class="card style">
-            <h2 class="card style">{frituras.name}</h2>
+        <div  class="card-yummy style">
+            <h2 class="card-h2 style">{frituras.name}</h2>
             
-            <img class="card" src={"/img/YUMMIES/"+frituras.fileName} alt={frituras.name}>
+            <img class="card-img" src={"/img/YUMMIES/"+frituras.fileName} alt={frituras.name}>
             
-            <ul class="card style">
-                <li class="card">credex</li>
-                <li class="card">logo</li>
-                <li class="card">whatsapp</li>
+            <ul class="card-ul style">
+                <li class="card-li">credex</li>
+                <li class="card-li">logo</li>
+                <li class="card-li">whatsapp</li>
             </ul>
-            <span class="card">${frituras.numero}</span>
+            <span class="card-span">${frituras.numero}</span>
         </div>
     ))
-  }
+  } 
+
+
+  <style>
+    *{
+      box-sizing: border-box;
+      border: 0;
+      padding: 0;
+      text-decoration: none;
+      list-style:none;
+    }
+    .card-yummy{
+      position: relative;
+      max-width: 320px;
+      aspect-ratio: 4/3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 50px 0 50px 0 ;
+      justify-content: space-between; 
+      margin: 1%;
+      padding: 1%;
+    }
+    .card-yummy:nth-child(2n){
+      background: rgba(170, 170, 170, 0.6);
+    }.card-yummy:nth-child(2n+1){
+      box-shadow:0px 0px 2px 1px teal;
+    }
+    .card-h2{
+      width: 80%;
+      text-align: center;
+      margin: 3%;
+    }
+    .card-ul{
+      display: flex;
+      width: 100%;
+      justify-content: space-around;
+    }
+    .card-li{
+      padding: 5px;
+      background: rgb(207, 207, 207);
+      border-radius: 10px;
+    }
+    .card-img{
+      width: 85%;
+    }
+    .card-span{
+      position: absolute;
+      top: 70%;
+      left: 85%;   
+    }
+  </style>
