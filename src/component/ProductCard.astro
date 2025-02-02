@@ -18,7 +18,7 @@ const { product } = Astro.props;
 <article class="product-card">
   <div class="card-inner">
     <div class="card-front">
-      <img class="product-image" src={"/img/catalogo/"+product.IMG} alt={`${product.MARCA} ${product.MODELO}`} />
+      <img class="product-image" src={"/img/catalogo/"+product.IMG} alt={`${product.MARCA} ${product.MODELO}`} loading="lazy" />
       <div class="product-info">
         <h2 class="product-title">{product.MARCA} {product.MODELO}</h2>
         <div class="specs">
