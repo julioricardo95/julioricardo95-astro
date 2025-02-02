@@ -2,22 +2,27 @@
 import Layouts from "../layouts/layouts copy.astro";
 import CardV1 from "../layouts/card_v1.astro";
 import CardV2 from "../layouts/card_v2.astro";
+import CardV3 from "../layouts/card_v3.astro";
+import CardV4 from "../layouts/card_v4.astro";
 ---
 
 <Layouts>
-    <section>
-        <CardV1 />
-    </section>
+<div class="container">
+   
+        
+        <CardV4 />
     
-    <section>
-        <CardV2 />
-    </section>
+</div>
     
-    <style>
-        section{     
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;}
-    </style>
+<style>
+    * { box-sizing: border-box; border: 0; padding: 0; text-decoration: none; list-style: none; font-family: 'Roboto', Arial, Helvetica, sans-serif; }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+</style>
+
     
 </Layouts>

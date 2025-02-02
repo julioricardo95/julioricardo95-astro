@@ -3,165 +3,166 @@ import mundoloco from '../../public/mundoloco.json'
 ---
     {  
         mundoloco.map((mundos) => (
-            <div  class="v2-laptop-card style-laptop-card margin">
-                <h2 class="v2-h2-laptop-card style-h2-laptop-card">{mundos.title}</h2>
-                
-                <img class="v2-img-laptop-card" src={"/img/mundoLoco/"+mundos.img} alt={mundos.title} loading="lazy">
-                 
-                <ul class="v2-ul-laptop-card style-ul-laptop-card ">
-                    <li class="v2-li-laptop-card">credex</li>
-                    <li class="v2-li-laptop-card">logo</li>
-                    <li class="v2-li-laptop-card">whatsapp</li>
+            <div class="laptop-card">
+                <h2 class="laptop-card-title">{mundos.title}</h2>
+                <img class="laptop-card-img" src={"/img/mundoLoco/"+mundos.img} alt="{mundos.title}" loading="lazy">
+                <ul class="laptop-card-list">
+                <li class="laptop-card-item">credex</li>
+                <li class="laptop-card-item">logo</li>
+                <li class="laptop-card-item">whatsapp</li>
                 </ul>
-                <span class="v2-span-laptop-card">{mundos.price}</span>
-                <span class="descripcion">{mundos.description}</span>
-
+                <span class="laptop-card-price">{mundos.price}</span>
+                <span class="laptop-card-description">{mundos.description}</span>
             </div>
         ))
     }
 
+
 <style>
-    /* style iniciales */
-    *{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, Helvetica;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-roboto, Arial, Helvetica, sans-serif);
+  }
+  :root {
+    --primary-color: hsl(290, 50%, 50%);
+    --secondary-color: hsl(0, 0%, 100%);
+    --text-color: #333;
+    --background-color: rgba(185, 185, 185, 0.8);
+    --box-shadow: 0px 5px 15px 0px rgb(0 0 0 / 30%);
+    --border-radius: 10px;
+    --transition: transform 0.2s ease-in-out;
+    --max-width: 320px;
+    --aspect-ratio: 4/6;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+  }
+  .card-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px;
+  }
+  .laptop-card {
+    position: relative;
+    max-width: var(--max-width);
+    aspect-ratio: var(--aspect-ratio);
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin: 20px;
+    transition: var(--transition);
+    animation: fadeIn 1s ease-in-out;
+  }
+  .laptop-card:hover {
+    transform: scale(1.05);
+    animation: bounce 0.5s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
     }
-    :root{
-        --biolet: hsl(290, 50%, 50%);
-        --white: hsl(0, 0%, 100%);
-        --h2:clamp(1.8rem, -0.875rem + 8.333333vw, 3rem);
-        --h3:clamp(1.25rem, -0.875rem + 8.333333vw,1.8rem);
-        --p:clamp(1rem, -0.875rem + 8.333333vw, 1.2rem);            /*font-size: max(1.2rem, 1.2vw)*/
-        --font-roboto:'Roboto Flex', sans-serif, Arial, Helvetica;
-        --box-shadow: 0px 5px 15px 0px rgb(0 0 0 / 30%);
-        --border-box: 20px
-        --background: rgba(255, 255, 255, 0.3);
-        --backdrop-filter: blur(10px);
-        --margin:15px 30px 15px 30px;
-        --text-shadow: #4147bb; 
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
-    body{
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-        justify-content: center;
+  }
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
     }
-    .margin{
-        margin: 10px;
+    40% {
+      transform: translateY(-10px);
     }
-
-    .v2-laptop-card{
-        position: relative;
-        width: 420px;
-        height: 285px;
-        background-color:orange;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        
+    60% {
+      transform: translateY(-5px);
     }
-
-    .v2-h2-laptop-card{
-        font-size: 2rem;
-        text-transform: capitalize;
-        font-weight: 500;
-        padding: 5px;
-        text-align: center;
-    }
-
-    .v2-ul-laptop-card{
-        width: 400px;
-        margin: auto;
-        background-color: aqua;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        POSITION: ABSOLUTE;
-        BOTTOM: 5%;
-    }
-
-    .v2-li-laptop-card{
-        list-style: none;
-        margin: 0px 0 0px 0 ;
-        background-color: chartreuse;
-        display: flex;
-        align-items: center;
-    }
-
-    .v2-li-laptop-card::before{
-        content:url('../../img/favicon.svg');
-        display: inline-block;
-        width: 25px;
-        margin: 1px 4px 1px 0 ;
-    }
-
-    .v2-img-laptop-card{
-        margin: auto;
-        position: absolute;
-        width: 200px;
-        margin: 10px 0 10px 0px ;
-        top: 25%;
-    }
-
-    .v2-span-laptop-card{
-        display: inline-block;
-        position: absolute;
-        bottom: 40%;
-        left: 10%;
-        font-size: 2.5rem;
-    }
-
-    .v2-span-laptop-card::before{
-        content: 'Precio';
-        display: block;
-        font-size: 15px;
-    }
-
-    .v2-span-laptop-card::after{
-        content:'+IVA';
-        display: block;
-        font-size: 10px;
-        margin: 0 0 0 30px;
-    }
-
-    .descripcion{
-        position: absolute;
-        background-color: #4147bb;
-        width: 500px;
-        height: 285px;
-        z-index: 10;
-        display: none;
-    }
-
-    /* style */
-
-    .v2-ul-laptop-card{
-        background-color: rgba(255, 255, 255, 0.2); 
-    }
-    
-    .v2-li-laptop-card{
-        background-color: rgba(255, 255, 255, 0.4);
-        padding: 0 5px 0 5px;
-        border-radius: 5px;
-    }
-    .v2-li-laptop-card:hover{
-        background-color: rgba(255, 255, 255, 0.8);
-    }
-    .v2-span-laptop-card{
-      background: rgba(255, 255, 255, 0.4);
-      padding: 5px;
-      border-radius: 5px;
-    }
-    .v2-laptop-card{
-        position: relative;
-        width: 420px;
-        height: 285px;
-        background-color:rgba(185, 185, 185, 0.8);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-       
+  }
+  .laptop-card-title {
+    font-size: clamp(1.8rem, -0.875rem + 8.333333vw, 3rem);
+    text-transform: capitalize;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--text-color);
+  }
+  .laptop-card-img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+    margin-bottom: 10px;
+    transition: transform 0.3s ease-in-out;
+  }
+  .laptop-card-img:hover {
+    transform: scale(1.1);
+  }
+  .laptop-card-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    position: absolute;
+    bottom: 5%;
+  }
+  .laptop-card-item {
+    font-size: clamp(1rem, -0.875rem + 8.333333vw, 1.2rem);
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  .laptop-card-item:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .laptop-card-price {
+    display: inline-block;
+    position: absolute;
+    bottom: 40%;
+    left: 10%;
+    font-size: 2.5rem;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 5px;
+    border-radius: 5px;
+    transition: transform 0.3s ease-in-out;
+  }
+  .laptop-card-price::before {
+    content: "Precio: ";
+    display: block;
+    font-size: 15px;
+  }
+  .laptop-card-price::after {
+    content: " +IVA";
+    display: block;
+    font-size: 10px;
+    margin: 0 0 0 30px;
+  }
+  .laptop-card-price:hover {
+    transform: scale(1.1);
+  }
+  .laptop-card-description {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-color);
+    display: none;
+  }
 </style>

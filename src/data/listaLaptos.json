@@ -1,0 +1,252 @@
+[
+  {
+    "N": 1,
+    "MARCA": "ASUS",
+    "MODELO": "F1400EA-SB34",
+    "PROCESADOR": "I3-1115G4",
+    "PANTALLA": 14,
+    "PRECIO": "$10,711.35",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.png"
+  },
+  {
+    "N": 2,
+    "MARCA": "HP",
+    "MODELO": "15-DY1031WN",
+    "PROCESADOR": "I3-1005G1",
+    "PANTALLA": 15.6,
+    "PRECIO": "$11,864.88",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 3,
+    "MARCA": "ASUS",
+    "MODELO": "F515EA-SB35",
+    "PROCESADOR": "I3-1115G4",
+    "PANTALLA": 15.6,
+    "PRECIO": "$11,864.88",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 4,
+    "MARCA": "HP",
+    "MODELO": "15-FC0039WN",
+    "PROCESADOR": "RYZEN-5 7520U",
+    "PANTALLA": 15.6,
+    "PRECIO": "$12,524.00",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 5,
+    "MARCA": "LENOVO",
+    "MODELO": "82VG00BJUS",
+    "PROCESADOR": "RYZEN-3 7320U",
+    "PANTALLA": 15.6,
+    "PRECIO": "$12,688.80",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 6,
+    "MARCA": "ACER",
+    "MODELO": "A315-58-33XS",
+    "PROCESADOR": "I3-1115G4",
+    "PANTALLA": 15.6,
+    "PRECIO": "$12,194.46",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 7,
+    "MARCA": "HP",
+    "MODELO": "15-EG0070WM",
+    "PROCESADOR": "I7-1165G7",
+    "PANTALLA": 15.6,
+    "PRECIO": "$20,433.96",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 8,
+    "MARCA": "HP",
+    "MODELO": "EF2126WM",
+    "PROCESADOR": "RYZEN-5 5500U",
+    "PANTALLA": 15.6,
+    "PRECIO": "$11,864.88",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 9,
+    "MARCA": "DELL",
+    "MODELO": "LATITUDE-5420",
+    "PROCESADOR": "I7-1185G7",
+    "PANTALLA": 14,
+    "PRECIO": "$13,182.86",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 10,
+    "MARCA": "DELL",
+    "MODELO": "LATITUDE-7330",
+    "PROCESADOR": "I7-1265U",
+    "PANTALLA": 13.3,
+    "PRECIO": "$14,830.76",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 11,
+    "MARCA": "DELL",
+    "MODELO": "LATITUDE-7320",
+    "PROCESADOR": "I5-1145G7",
+    "PANTALLA": 13.3,
+    "PRECIO": "$11,534.96",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 12,
+    "MARCA": "DELL",
+    "MODELO": "LATITUDE-7330",
+    "PROCESADOR": "I5-1245U",
+    "PANTALLA": 13.3,
+    "PRECIO": "$12,358.90",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 13,
+    "MARCA": "HP",
+    "MODELO": "15-DY2713ST",
+    "PROCESADOR": "I3-1125G4",
+    "PANTALLA": 15.6,
+    "PRECIO": "$11,667.13",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 14,
+    "MARCA": "HP",
+    "MODELO": "15-DY2791WN",
+    "PROCESADOR": "13-1115G4",
+    "PANTALLA": 15.6,
+    "PRECIO": "$13,282.00",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 15,
+    "MARCA": "LENOVO",
+    "MODELO": "82QCX003US",
+    "PROCESADOR": "I3-1215U",
+    "PANTALLA": 14,
+    "PRECIO": "$12,622.00",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 16,
+    "MARCA": "HP",
+    "MODELO": "15-DY2702DX",
+    "PROCESADOR": "13-1115G4",
+    "PANTALLA": 15.6,
+    "PRECIO": "$12,886.50",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 17,
+    "MARCA": "HP TACTIL",
+    "MODELO": "15-DY4013DX",
+    "PROCESADOR": "15-1155G7",
+    "PANTALLA": 15.6,
+    "PRECIO": "$13,315.00",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 18,
+    "MARCA": "HP TACTIL",
+    "MODELO": "15-DY2031NR",
+    "PROCESADOR": "I3-1115G4",
+    "PANTALLA": 15.6,
+    "PRECIO": "$11,996.00",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 19,
+    "MARCA": "HP",
+    "MODELO": "17-BY2053CL",
+    "PROCESADOR": "I5-10210U",
+    "PANTALLA": "17.30 �",
+    "PRECIO": "$11,996.00",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 20,
+    "MARCA": "HP",
+    "MODELO": "14-DQ2031WM",
+    "PROCESADOR": "I3-1115G4",
+    "PANTALLA": "14.00 �",
+    "PRECIO": "$11,008.00",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 21,
+    "MARCA": "LENOVO",
+    "MODELO": "82C401FFUS",
+    "PROCESADOR": "I3-1005G1",
+    "PANTALLA": 14,
+    "PRECIO": "$11,008.00",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 22,
+    "MARCA": "ASUS",
+    "MODELO": "K1703ZA-WH34",
+    "PROCESADOR": "I3-1115G4",
+    "PANTALLA": 15.6,
+    "PRECIO": "$12,985.45",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 23,
+    "MARCA": "HP",
+    "MODELO": "DY2131WM",
+    "PROCESADOR": "13-1115G4",
+    "PANTALLA": 15.6,
+    "PRECIO": "$11,996.70",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 24,
+    "MARCA": "HP",
+    "MODELO": "15-DW2057CL",
+    "PROCESADOR": "I5-1035G1",
+    "PANTALLA": 15.6,
+    "PRECIO": "$12,655.87",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  },
+  {
+    "N": 25,
+    "MARCA": "ACER",
+    "MODELO": "A315-56-596W",
+    "PROCESADOR": "I5-1035G1",
+    "PANTALLA": 15.6,
+    "PRECIO": "$11,667.13",
+    "DESCRIPCION": "1P",
+    "IMG": "ACER-A315-58-33XS.jpg"
+  }
+]

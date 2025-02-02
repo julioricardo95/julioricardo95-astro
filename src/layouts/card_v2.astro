@@ -20,51 +20,132 @@ import yummy from '../../public/yummy.json'
 
 
   <style>
-    *{
-      box-sizing: border-box;
-      border: 0;
-      padding: 0;
-      text-decoration: none;
-      list-style:none;
+  * {
+    box-sizing: border-box;
+    border: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
+  }
+  :root {
+    --primary-color: #ff6f61; /* Coral */
+    --secondary-color: #4caf50; /* Verde */
+    --bg-light: #f3e5f5; /* Lila claro */
+    --bg-dark: #e1bee7; /* Lila */
+    --text-color: #333;
+    --text-light: #fff;
+    --padding: 10px;
+    --border-radius: 10px;
+    --transition: 0.3s ease;
+    --box-shadow-hover: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    --max-width: 320px;
+    --aspect-ratio: 4/6;
+    --margin: 1%;
+    --font-size-large: clamp(1rem, 2vw + 1rem, 2rem);
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    padding: var(--padding);
+    background-color: var(--bg-light);
+  }
+  .card-yummy {
+    position: relative;
+    width: 100%;
+    max-width: var(--max-width);
+    aspect-ratio: var(--aspect-ratio);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 50px 0 50px 0;
+    justify-content: space-between;
+    margin: var(--margin);
+    padding: var(--padding);
+    overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .card-yummy:hover {
+    transform: scale(1.05);
+    box-shadow: var(--box-shadow-hover);
+  }
+  .card-h2 {
+    width: 90%;
+
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+
+    text-align: center;
+    margin: 2%;
+    font-size: var(--font-size-large);
+    color: var(--text-color);
+    transition: color var(--transition);
+  }
+  .card-h2:hover {
+    color: var(--primary-color);
+  }
+  .card-ul {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    padding: 0;
+  }
+  .card-li {
+    padding: var(--padding);
+    background: var(--bg-dark);
+    border-radius: var(--border-radius);
+    transition: background var(--transition), transform var(--transition);
+  }
+  .card-li:hover {
+    background: var(--bg-light);
+    transform: scale(1.1);
+  }
+  .card-img {
+    width: 85%;
+    border-radius: var(--border-radius);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .card-img:hover {
+    transform: scale(1.1);
+    box-shadow: var(--box-shadow-hover);
+  }
+  .card-span {
+    position: absolute;
+    top: 70%;
+    left: 85%;
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: var(--padding);
+    border-radius: var(--border-radius);
+    transition: background var(--transition), transform var(--transition);
+  }
+  .card-span:hover {
+    background: var(--secondary-color);
+    transform: scale(1.1);
+  } /* Media Queries */
+  @media (max-width: 768px) {
+    .card-yummy {
+      max-width: 100%;
     }
-    .card-yummy{
-      position: relative;
-      max-width: 320px;
-      aspect-ratio: 4/3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border-radius: 50px 0 50px 0 ;
-      justify-content: space-between; 
-      margin: 1%;
-      padding: 1%;
+    .card-h2 {
+      font-size: clamp(1.2rem, 4vw + 1rem, 1.8rem);
     }
-    .card-yummy:nth-child(2n){
-      background: rgba(170, 170, 170, 0.6);
-    }.card-yummy:nth-child(2n+1){
-      box-shadow:0px 0px 2px 1px teal;
-    }
-    .card-h2{
-      width: 80%;
-      text-align: center;
-      margin: 3%;
-    }
-    .card-ul{
-      display: flex;
-      width: 100%;
-      justify-content: space-around;
-    }
-    .card-li{
+  }
+  @media (max-width: 480px) {
+    .card-yummy {
       padding: 5px;
-      background: rgb(207, 207, 207);
-      border-radius: 10px;
     }
-    .card-img{
-      width: 85%;
+    .card-h2 {
+      font-size: clamp(1rem, 4vw + 1rem, 1.5rem);
     }
-    .card-span{
-      position: absolute;
-      top: 70%;
-      left: 85%;   
+    .card-li {
+      padding: 5px;
     }
-  </style>
+    .card-img {
+      width: 100%;
+    }
+  }
+</style>

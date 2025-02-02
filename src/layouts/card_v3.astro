@@ -1,23 +1,168 @@
-<section  class="style-laptop-card v1-laptop-card margin">
-    <h2 class="style-h2-laptop-card v1-h2-laptop-card v2-h2-laptop-card">laptop ASUS 15''</h2>
+---
+import mundoloco from '../../public/mundoloco.json'
+---
+    {  
+        mundoloco.map((mundos) => (
+        <div class="v2-laptop-card style-laptop-card margin">
+            <h2 class="v2-h2-laptop-card style-h2-laptop-card">{mundos.title}</h2>
 
-    <div class="flex-r">
+            <img class="v2-img-laptop-card" src={"/img/mundoLoco/"+mundos.img}
+            alt={mundos.title} loading="lazy">
 
-        <ul class="style-ul-laptop-card v1-ul-laptop-card v2-ul-laptop-card">
-            <li class="v1-li-laptop-card v2-li-laptop-card">m</li>
-            <li class="v1-li-laptop-card v2-li-laptop-card">r</li>
-            <li class="v1-li-laptop-card v2-li-laptop-card">pr</li>
-            <li class="v1-li-laptop-card v2-li-laptop-card">pan</li>
-        </ul>
-    
-        <img class="v1-img-laptop-card v2-img-laptop-card" src="/lt.png" alt="">
-    
-        
-    </div>
-    <span class="v1-span-laptop-card">$90</span>
-    <ul class="style-ul-laptop-card v1-ul-laptop-card v1-ul-laptop-card-r botton" >
-        <li class="v1-li-laptop-card v2-li-laptop-card">credex</li>
-        <li class="v1-li-laptop-card v2-li-laptop-card">logo</li>
-        <li class="v1-li-laptop-card v2-li-laptop-card">whatsapp</li>
-    </ul>
-</section>
+            <ul class="v2-ul-laptop-card style-ul-laptop-card">
+                <li class="v2-li-laptop-card">credex</li>
+                <li class="v2-li-laptop-card">logo</li>
+                <li class="v2-li-laptop-card">whatsapp</li>
+            </ul>
+            <span class="v2-span-laptop-card">{mundos.price}</span>
+            <span class="descripcion">{mundos.description}</span>
+        </div>
+        ))
+    }
+
+    <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-roboto, Arial, Helvetica, sans-serif);
+  }
+  :root {
+    --primary-color: hsl(290, 50%, 50%);
+    --secondary-color: hsl(0, 0%, 100%);
+    --text-color: #333;
+    --background-color: rgba(185, 185, 185, 0.8);
+    --box-shadow: 0px 5px 15px 0px rgb(0 0 0 / 30%);
+    --border-radius: 10px;
+    --transition: transform 0.2s ease-in-out;
+    --container-bg-color: #f0f0f0;
+    --padding: 20px;
+    --font-size-large: 2.5rem;
+    --font-size-medium: 2rem;
+    --font-size-small: 1.25rem;
+    --border-radius-small: 5px;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--container-bg-color);
+  }
+  .margin {
+    margin: 10px;
+  }
+  .v2-laptop-card {
+    position: relative;
+    width: 420px;
+    height: 285px;
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--padding);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    animation: fadeIn 1s ease-in-out;
+  }
+  .v2-laptop-card:hover {
+    transform: scale(1.05);
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .v2-h2-laptop-card {
+    font-size: var(--font-size-medium);
+    text-transform: capitalize;
+    font-weight: 500;
+    padding: 5px;
+    text-align: center;
+    color: var(--text-color);
+    transition: color 0.3s ease-in-out;
+  }
+  .v2-h2-laptop-card:hover {
+    color: var(--primary-color);
+  }
+  .v2-img-laptop-card {
+    margin: auto;
+    position: absolute;
+    width: 200px;
+    top: 25%;
+    transition: transform 0.3s ease-in-out;
+  }
+  .v2-img-laptop-card:hover {
+    transform: scale(1.1);
+  }
+  .v2-ul-laptop-card {
+    width: 400px;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    position: absolute;
+    bottom: 5%;
+  }
+  .v2-li-laptop-card {
+    list-style: none;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 0 5px;
+    border-radius: var(--border-radius-small);
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out;
+  }
+  .v2-li-laptop-card:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .v2-li-laptop-card::before {
+    content: url("../../img/favicon.svg");
+    display: inline-block;
+    width: 25px;
+    margin: 1px 4px 1px 0;
+  }
+  .v2-span-laptop-card {
+    display: inline-block;
+    position: absolute;
+    bottom: 40%;
+    left: 10%;
+    font-size: var(--font-size-large);
+    background: rgba(255, 255, 255, 0.4);
+    padding: 5px;
+    border-radius: var(--border-radius-small);
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  }
+  .v2-span-laptop-card::before {
+    content: "Precio";
+    display: block;
+    font-size: 15px;
+  }
+  .v2-span-laptop-card::after {
+    content: "+IVA";
+    display: block;
+    font-size: 10px;
+    margin: 0 0 0 30px;
+  }
+  .v2-span-laptop-card:hover {
+    transform: scale(1.1);
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+  }
+  .descripcion {
+    position: absolute;
+    background-color: #4147bb;
+    width: 500px;
+    height: 285px;
+    z-index: 10;
+    display: none;
+  }
+</style>

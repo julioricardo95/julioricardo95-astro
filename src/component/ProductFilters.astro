@@ -1,0 +1,168 @@
+---
+---
+
+<div class="filters">
+  <div class="search-box">
+    <input 
+      type="text" 
+      class="search-input"
+      id="searchInput" 
+      placeholder="Buscar por marca, modelo o procesador..."
+    />
+  </div>
+
+  <input type="checkbox" id="toggle-filters" class="toggle-filters" />
+  <label for="toggle-filters" class="filter-header">
+    <h3 class="filter-title">Filtros Avanzados</h3>
+    <span class="toggle-icon">▼</span>
+  </label>
+
+  <div class="filter-content">
+    <div class="price-range">
+      <label class="price-label">Rango de precio:</label>
+      <div class="price-inputs">
+        <input type="number" class="price-input" id="minPrice" placeholder="Min" />
+        <span class="price-separator">-</span>
+        <input type="number" class="price-input" id="maxPrice" placeholder="Max" />
+      </div>
+    </div>
+
+    <div class="screen-size">
+      <label class="screen-label">Tamaño de pantalla:</label>
+      <select id="screenSize" class="screen-select">
+        <option value="">Todos</option>
+        <option value="13">13" o menos</option>
+        <option value="14">14"</option>
+        <option value="15">15" o más</option>
+      </select>
+    </div>
+
+    <div class="sort">
+      <label class="sort-label">Ordenar por precio:</label>
+      <select id="sortPrice" class="sort-select">
+        <option value="">Sin ordenar</option>
+        <option value="asc">Menor a mayor</option>
+        <option value="desc">Mayor a menor</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+  --accent-color: #007bff;
+  --bg-color: #f8f9fa;
+  --white-color: white;
+  --text-color: #000;
+  --input-border-color: #ddd;
+  --input-focus-color: rgba(0, 123, 255, 0.5);
+  --box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  --box-shadow-hover: 0 4px 15px rgba(0,0,0,0.2);
+  --padding: 0.5rem;
+  --button-hover-bg: darken(var(--accent-color), 10%);
+}
+
+.filters {
+  background: var(--white-color);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+
+.search-box {
+  margin-bottom: 0.7rem;
+}
+
+.search-input {
+  width: 100%;
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.toggle-filters {
+  display: none;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  background: var(--white-color);
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 1rem;
+  transition: background 0.3s ease;
+}
+
+.filter-header:hover {
+  background: var(--bg-color);
+}
+
+.filter-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.toggle-icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.filter-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.toggle-filters:checked + .filter-header + .filter-content {
+  max-height: 500px; /* Ajusta el valor según el contenido */
+  padding: 1rem 0;
+}
+
+.toggle-filters:checked + .filter-header .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.price-range,
+.screen-size,
+.sort {
+  margin-top: 1rem;
+}
+
+.price-label,
+.screen-label,
+.sort-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.price-inputs {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.price-input {
+  width: calc(50% - 0.25rem); /* Ajustado para mejorar la separación */
+}
+
+.price-separator {
+  margin: 0 0.5rem;
+}
+
+.screen-select,
+.sort-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+  background-color: var(--white-color);
+}
+</style>
+

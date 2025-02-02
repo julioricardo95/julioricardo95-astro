@@ -1,145 +1,222 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-    <section  class="style-laptop-card v1-laptop-card margin">
-        <h2 class="style-h2-laptop-card v1-h2-laptop-card">laptop ASUS</h2>
-        <ul class="style-ul-laptop-card v1-ul-laptop-card">
-            <li class="v1-li-laptop-card">m</li>
-            <li class="v1-li-laptop-card">r</li>
-            <li class="v1-li-laptop-card">pr</li>
-            <li class="v1-li-laptop-card">pan</li>
-        </ul>
-    
-        <img class="v1-img-laptop-card" src="/lt.png" alt="">
-    
-        <ul class="style-ul-laptop-card v1-ul-laptop-card v1-ul-laptop-card-r">
-            <li class="v1-li-laptop-card">credex</li>
-            <li class="v1-li-laptop-card">logo</li>
-            <li class="v1-li-laptop-card">whatsapp</li>
-        </ul>
-        <span class="v1-span-laptop-card">$90</span>
-    </section>
-    
-   
+---
+import mundoloco from '../data/listaLaptos.json'
+---
+    {  
+        mundoloco.map((mundos) => (
+        <div class="v2-laptop-card style-laptop-card">
+            <h2 class="v2-h2-laptop-card style-h2-laptop-card">{mundos.MARCA}-{mundos.MODELO}</h2>
 
-    <style>
-        *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica;
-        }
-        :root{
-            --biolet: hsl(290, 50%, 50%);
-            --white: hsl(0, 0%, 100%);
-            --h2:clamp(1.8rem, -0.875rem + 8.333333vw, 3rem);
-            --h3:clamp(1.25rem, -0.875rem + 8.333333vw,1.8rem);
-            --p:clamp(1rem, -0.875rem + 8.333333vw, 1.2rem);            /*font-size: max(1.2rem, 1.2vw)*/
-            --font-roboto:'Roboto Flex', sans-serif, Arial, Helvetica;
-            --box-shadow: 0px 5px 15px 0px rgb(0 0 0 / 30%);
-            --border-box: 20px
-            --background: rgba(255, 255, 255, 0.3);
-            --backdrop-filter: blur(10px);
-            --margin:15px 30px 15px 30px;
-            --text-shadow: #4147bb; 
-        }
-        body{
-            display: flex;
-           flex-wrap: wrap;
-        }
-        .margin{
-            margin: 20px;
-        }
-    
-        .v1-laptop-card{
-            width: 500px;
-            height: 285px;
-            background-color:orange;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /*transform: scale(.9);*/
-        }
-        .v1-h2-laptop-card{
-            font-size: 2.5rem;
-            text-transform: capitalize;
-            font-weight: 500;
-            padding: 5px;
-        }
-        .v1-ul-laptop-card{
-            width: 400px;
-            margin: auto;
-            background-color: aqua;
-            display: flex;
-            justify-content: space-around;
-           
-        }
-        .v1-ul-laptop-card-r{
-            width: 100%;
-            background-color: black;
-            justify-content: space-between;
-            position: relative;
-            bottom: 0px;
-        }
-        .v1-li-laptop-card{
-            list-style: none;
-            margin: 0px 0 0px 0 ;
-            background-color: chartreuse;
-            display: flex;
-            align-items: center;
-        }
-        .v1-li-laptop-card::before{
-            content:url('../../img/favicon.svg');
-            display: inline-block;
-            width: 25px;
-            margin: 1px 4px 1px 0 ;
-        }
-        .v1-img-laptop-card{
-            margin: auto;
-            position: relative;
-            width: 222px;
-            margin: 10px 0 10px 0px ;
-        }
-        .v1-span-laptop-card{
-            display: inline-block;
-            position: relative;
-            bottom: 55%;
-            left: 40%;
-            font-size: 2.5rem;
-        }
-        .v1-span-laptop-card::before{
-            content: 'Precio';
-            display: block;
-            font-size: 15px;
-        }
-        .v1-span-laptop-card::after{
-            content:'+IVA';
-            display: block;
-            font-size: 10px;
-            margin: 0 0 0 30px;
-        }
-    
-    
-        .v2-ul-laptop-card{
-            flex-direction: column;
-            max-width: 80px;
-            margin: 0 10px 0 10px;
-        }
-        .flex-r{
-            margin: auto;
-            display: flex;
-            flex-direction: row-reverse;
-        }
-        .bottom{
-            
-        }
+            <img class="v2-img-laptop-card" src={"/img/catalogo/"+mundos.IMG}
+            alt={mundos.MARCA} loading="lazy">
 
-    </style>
-</body>
-</html>
+            <ul class="v2-ul-laptop-card style-ul-laptop-card">
+                <li class="v2-li-laptop-card">{mundos.PANTALLA}</li>
+                <li class="v2-li-laptop-card">{mundos.PROCESADOR}</li>
+                <li class="v2-li-laptop-card"> <a  class="li-a-card" href="https://wa.me/message/H4MRQFKG6WBLG1"> <img class="li-img" src="/img/compuparts_sa.jpg" alt="compuparts_sa" > </a> </li>
+            </ul>
+            <span class="v2-span-laptop-card">{mundos.PRECIO}</span>
+            <span class="descripcion">{mundos.DESCRIPCION}</span>
+        </div>
+        ))
+    }
+
+    
+
+<style>
+
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --primary-color: #6200ea; /* Púrpura */
+  --secondary-color: #03dac6; /* Verde menta */
+  --text-color: #333;
+  --background-color: #f5f5f5;
+  --card-bg-color: #ffffff;
+  --box-shadow: 0px 10px 20px 0px rgb(0 0 0 / 50%);
+  --border-radius: 15px;
+  --transition: all 0.3s ease-in-out;
+  --padding: 20px;
+  --font-size-large: 2.5rem;
+  --font-size-medium: 2rem;
+  --font-size-small: 1.25rem;
+  --border-radius-small: 10px;
+  --highlight-color: #ff4081; /* Rosa */
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--background-color);
+}
+
+.v2-laptop-card {
+  position: relative;
+  width: 350px;
+  aspect-ratio: 4/3;
+  background-color: var(--card-bg-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2%;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  animation: fadeIn 1s ease-in-out, hoverEffect 3s infinite;
+  border: 3px solid var(--primary-color);
+}
+
+.v2-laptop-card:hover {
+  transform: scale(1.05) rotate(3deg);
+  border: 3px solid var(--secondary-color);
+  box-shadow: 0px 15px 30px 0px rgb(0 0 0 / 70%);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hoverEffect {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.v2-h2-laptop-card {
+  font-size: var(--font-size-medium);
+  text-transform: capitalize;
+  font-weight: 700;
+  padding: 10px;
+  text-align: center;
+  color: var(--text-color);
+  transition: color 0.3s ease-in-out;
+}
+
+.v2-h2-laptop-card:hover {
+  color: var(--primary-color);
+  text-shadow: 1px 1px 5px var(--highlight-color);
+}
+
+.v2-img-laptop-card {
+  margin: auto;
+  position: absolute;
+  width: 80%;
+  top: 18%;
+  transition: transform 0.3s ease-in-out;
+  border-radius: var(--border-radius-small);
+}
+
+.v2-img-laptop-card:hover {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.v2-ul-laptop-card {
+  width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 5%;
+}
+
+.v2-li-laptop-card {
+  list-style: none;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.4);
+  padding: 5px 10px;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.v2-li-laptop-card:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.1);
+}
+
+.v2-li-laptop-card:nth-child(1)::before {
+  content: url("../../img/favicon.svg");
+  display: inline-block;
+  width: 25px;
+  margin: 0;
+}
+.v2-li-laptop-card:nth-child(2)::before {
+  content: url("../../img/favicon.svg");
+  display: inline-block;
+  width: 25px;
+  margin: 0;
+}
+
+.li-img {
+  width: 80px;
+  margin: 0;
+}
+
+.v2-span-laptop-card {
+  display: inline-block;
+  position: absolute;
+  bottom: 20%;
+  left: 6%;
+  font-size: var(--font-size-small);
+  background: rgba(255, 255, 255, 0.4);
+  padding: 5px;
+  border-radius: var(--border-radius-small);
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  animation: priceBounce 3s infinite;
+}
+
+@keyframes priceBounce {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(0, -10px);
+  }
+  50% {
+    transform: translate(0, 0);
+  }
+  75% {
+    transform: translate(0, -5px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.v2-span-laptop-card:hover {
+  transform: scale(1.1);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+.descripcion {
+  position: absolute;
+  background-color: var(--highlight-color);
+  width: 500px;
+  height: 285px;
+  z-index: 10;
+  display: none;
+}
+
+</style>
