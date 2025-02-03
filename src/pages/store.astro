@@ -202,7 +202,7 @@ grid.innerHTML = filteredProducts.map(product => `
       </div>
       <div class="card-back">
         <div class="product-info">
-          <h2 class="product-title">${product.MARCA} ${product.MODELO}</h2>
+          <h2 class="product-title none">${product.MARCA} ${product.MODELO}</h2>
           <p class="product-description">${product.DESCRIPCION}</p>
           <div class="price-link-container">
             <p class="product-price">${product.PRECIO.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</p>

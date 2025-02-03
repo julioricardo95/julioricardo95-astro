@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from '../component/ThemeToggle.astro';
+
 interface Props {
 	title: string;
 }
@@ -54,118 +56,166 @@ const { title } = Astro.props;
 		<!-- Contenido principal -->
 		<main>
 			<slot />
+			<ThemeToggle></ThemeToggle>
 		</main>
+
 	</body>
 </html>
 
+
+
 <style is:global>
+	/* Modo claro (día) */
 	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
+	  --background-color: hsl(0, 0%, 80%); /* Fondo más claro para mejor contraste */
+	  --text-color: hsl(0, 0%, 20%); /* Texto oscuro */
+	  --accent: 136, 58, 234; /* Color principal */
+	  --accent-light: 224, 204, 250; /* Color secundario */
+	  --accent-dark: 49, 10, 101; /* Color oscuro */
+	  --accent-gradient: linear-gradient(
+		45deg,
+		rgb(var(--accent)),
+		rgb(var(--accent-light)) 75%,
+		white 60%
+	  );
+	  --button-bg: rgb(var(--accent)); /* Fondo de botones */
+	  --button-text: #ffffff; /* Texto de botones */
 	}
-
+  
+	/* Modo oscuro (noche) */
+	[data-theme="dark"] {
+	  --background-color: hsl(0, 0%, 10%); /* Fondo más oscuro */
+	  --text-color: #e0e0e0; /* Texto claro */
+	  --accent: 224, 204, 250; /* Color principal */
+	  --accent-light: 136, 58, 234; /* Color secundario */
+	  --accent-dark: 49, 10, 101; /* Color oscuro */
+	  --accent-gradient: linear-gradient(
+		45deg,
+		rgb(var(--accent)),
+		rgb(var(--accent-light)) 30%,
+		#121212 60%
+	  );
+	  --button-bg: rgb(var(--accent)); /* Fondo de botones */
+	  --button-text: #121212; /* Texto de botones */
+	}
+  
+	/* Estilos base */
 	html {
-		font-family: system-ui, sans-serif;
-		background: #c2c5d8;
-		line-height: 1.5;
-		color: #333;
+	  font-family: system-ui, sans-serif;
+	  background: var(--background-color);
+	  line-height: 1.5;
+	  color: var(--text-color);
 	}
-
+  
 	body {
-		margin: 0;
-		padding: 0;
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
+	  margin: 0;
+	  padding: 0;
+	  min-height: 100vh;
+	  display: flex;
+	  flex-direction: column;
+	  background-color: var(--background-color);
+	  color: var(--text-color);
+	  transition: background-color 0.3s ease, color 0.3s ease;
 	}
-
+  
 	main {
-		flex: 1;
-		padding: 2rem;
-		position: relative;
+	  flex: 1;
+	  padding: 2rem;
+	  position: relative;
 	}
-
+  
 	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-		background-color: #f4f4f4;
-		padding: 0.2rem 0.4rem;
-		border-radius: 4px;
+	  font-family:
+		Menlo,
+		Monaco,
+		Lucida Console,
+		Liberation Mono,
+		DejaVu Sans Mono,
+		Bitstream Vera Sans Mono,
+		Courier New,
+		monospace;
+	  background-color: rgba(0, 0, 0, 0.1);
+	  padding: 0.2rem 0.4rem;
+	  border-radius: 4px;
+	  color: var(--text-color);
 	}
-
+  
 	a {
-		color: rgb(var(--accent));
-		text-decoration: none;
+	  color: rgb(var(--accent));
+	  text-decoration: none;
 	}
-
+  
 	a:hover {
-		text-decoration: underline;
+	  color: rgb(var(--accent-light));
+	  text-decoration: underline;
 	}
-
+  
+	/* Botones */
+	button {
+	  background-color: var(--button-bg);
+	  color: var(--button-text);
+	  border: none;
+	  padding: 0.5rem 1rem;
+	  border-radius: 4px;
+	  cursor: pointer;
+	  transition: background-color 0.3s ease;
+	}
+  
+	button:hover {
+	  background-color: rgba(var(--accent), 0.8);
+	}
+  
 	/* Animaciones */
 	@keyframes fadeIn {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
+	  from {
+		opacity: 0;
+	  }
+	  to {
+		opacity: 1;
+	  }
 	}
-
+  
 	@keyframes slideIn {
-		from {
-			transform: translateY(20px);
-			opacity: 0;
-		}
-		to {
-			transform: translateY(0);
-			opacity: 1;
-		}
+	  from {
+		transform: translateY(20px);
+		opacity: 0;
+	  }
+	  to {
+		transform: translateY(0);
+		opacity: 1;
+	  }
 	}
-
+  
 	.fade-in {
-		animation: fadeIn 1s ease-in-out;
+	  animation: fadeIn 1s ease-in-out;
 	}
-
+  
 	.slide-in {
-		animation: slideIn 0.8s ease-out;
+	  animation: slideIn 0.8s ease-out;
 	}
-
+  
 	/* Iconos de FontAwesome */
 	.icon {
-		font-size: 1.5rem;
-		margin-right: 0.5rem;
-		transition: transform 0.3s ease;
+	  font-size: 1.5rem;
+	  margin-right: 0.5rem;
+	  transition: transform 0.3s ease;
+	  color: var(--text-color);
 	}
-
+  
 	.icon:hover {
-		transform: scale(1.2);
+	  transform: scale(1.2);
 	}
-
+  
 	/* Mejoras de accesibilidad */
 	:focus {
-		outline: 2px solid rgb(var(--accent));
-		outline-offset: 2px;
+	  outline: 2px solid rgb(var(--accent));
+	  outline-offset: 2px;
 	}
-
+  
 	/* Estilos responsivos */
 	@media (max-width: 768px) {
-		main {
-			padding: 1rem;
-		}
+	  main {
+		padding: 1rem;
+	  }
 	}
-</style>
+  </style>

@@ -29,7 +29,7 @@ const { product } = Astro.props;
     </div>
     <div class="card-back">
       <div class="product-info">
-        <h2 class="product-title">{product.MARCA} {product.MODELO}</h2>
+        <h2 class="product-title none">{product.MARCA} {product.MODELO}</h2>
         <p class="product-description">{product.DESCRIPCION}</p> <!-- 555 caracteres -->
         <!-- Agrupamos price y link en un div -->
         <div class="price-link-container">
@@ -47,16 +47,19 @@ const { product } = Astro.props;
 <style is:global>
   /* Variables CSS */
   :root {
-    --accent-color: #007bff; /* Color principal */
-    --bg-color: #f8f9fa; /* Color de fondo */
-    --white-color: white; /* Color blanco */
-    --text-color: #000; /* Color de texto */
-    --input-border-color: #ddd; /* Color del borde */
-    --input-focus-color: rgba(0, 123, 255, 0.5); /* Color de enfoque */
-    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+    --accent-color: #007bff; /* Azul principal */
+    --accent-hover: #0056b3; /* Azul oscuro para hover */
+    --bg-color: #f8f9fa; /* Fondo gris claro */
+    --white-color: #ffffff; /* Blanco */
+    --text-color: #333333; /* Texto oscuro */
+    --input-border-color: #dddddd; /* Borde gris */
+    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
     --box-shadow-hover: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra al pasar el mouse */
     --padding: 0.5rem; /* Espaciado */
+    --border-radius: 10px; /* Bordes redondeados */
     --button-hover-bg: #0056b3; /* Color de fondo al pasar el mouse */
+    --primary-gradient: linear-gradient(135deg, #007bff, #00bfff); /* Degradado azul */
+    --secondary-gradient: linear-gradient(135deg, #ff6f61, #ffcc00); /* Degradado naranja/amarillo */
   }
 
   .product-card {
@@ -183,6 +186,13 @@ const { product } = Astro.props;
 
   /* Media Queries para Responsividad */
   @media (max-width: 768px) {
+    .none{
+      display: none; 
+    }
+    .card-back{
+      margin-top: 5px;
+    }
+
     .product-card {
       max-width: 100%; /* Ajusta el ancho al 100% en dispositivos móviles */
       height: auto; /* Altura automática */
