@@ -1,0 +1,400 @@
+---
+
+---
+
+<!-- Utm converter-->
+<section class="mobile-section control-panel">
+  <button
+    class="section-toggle"
+    aria-controls="converterContent"
+    aria-expanded="true"
+  >
+    <h3>UTM Converter</h3>
+    <span class="toggle-icon">▼</span>
+  </button>
+  <div id="converterContent" class="section-content">
+    <article class="converter-inputs">
+      <!-- Zona UTM y Hemisferio -->
+      <div class="input-group">
+        <h4>UTM Zone and Hemisphere</h4>
+        <label class="input-label">
+          Zone
+          <select id="utmZone" class="touch-input">
+            <!-- Generar opciones desde 1N hasta 60N y 1S hasta 60S -->
+            <option value="16N" selected>16N</option>
+            <!-- Más opciones generadas dinámicamente -->
+          </select>
+        </label>
+        <label class="input-label">
+          Hemisphere
+          <select id="hemisphere" class="touch-input">
+            <option value="N">North</option>
+            <option value="S">South</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Coordenadas Geográficas -->
+      <div class="input-group">
+        <h4>Geographic Coordinates (WGS84)</h4>
+        <label class="input-label">
+          Latitude
+          <input
+            type="number"
+            id="latInput"
+            step="any"
+            class="touch-input"
+            placeholder="Decimal degrees"
+            aria-label="Latitude"
+          />
+          <span class="error-message" id="latError"></span>
+        </label>
+        <label class="input-label">
+          Longitude
+          <input
+            type="number"
+            id="lonInput"
+            step="any"
+            class="touch-input"
+            placeholder="Decimal degrees"
+            aria-label="Longitude"
+          />
+          <span class="error-message" id="lonError"></span>
+        </label>
+      </div>
+
+      <!-- Coordenadas UTM -->
+      <div class="input-group">
+        <h4>UTM Coordinates</h4>
+        <label class="input-label">
+          Easting
+          <input
+            type="number"
+            id="eastingInput"
+            step="any"
+            class="touch-input"
+            placeholder="Meters"
+            aria-label="Easting"
+          />
+          <span class="error-message" id="eastingError"></span>
+        </label>
+        <label class="input-label">
+          Northing
+          <input
+            type="number"
+            id="northingInput"
+            step="any"
+            class="touch-input"
+            placeholder="Meters"
+            aria-label="Northing"
+          />
+          <span class="error-message" id="northingError"></span>
+        </label>
+      </div>
+    </article>
+
+    <!-- Botones de Conversión -->
+    <div class="converter-buttons">
+      <button id="convertToUTM" class="action-button">Convert to UTM</button>
+      <button id="convertToGeographic" class="action-button"
+        >Convert to Geographic</button
+      >
+    </div>
+
+    <!-- Resultados -->
+    <div id="conversionResult" class="conversion-result" aria-live="polite">
+    </div>
+  </div>
+</section>
+
+<script>
+  // Constantes UTM
+  const EQUATORIAL_RADIUS = 6378137.0; // WGS84
+  const ECCENTRICITY_SQUARED = 0.00669438;
+  const SCALE_FACTOR = 0.9996;
+  const FALSE_EASTING = 500000;
+
+  // Generar opciones de zona UTM
+  function generateUTMZones() {
+    const utmZoneSelect = document.getElementById("utmZone");
+    for (let zone = 1; zone <= 60; zone++) {
+      utmZoneSelect.add(new Option(`${zone}N`, `${zone}N`));
+      utmZoneSelect.add(new Option(`${zone}S`, `${zone}S`));
+    }
+  }
+
+  // Obtener el meridiano central de la zona UTM
+  function getCentralMeridian(zone) {
+    const zoneNumber = parseInt(zone);
+    return ((-183 + zoneNumber * 6) * Math.PI) / 180;
+  }
+
+  // Validar coordenadas geográficas
+  function isValidGeographic(lat, lon) {
+    return (
+      !isNaN(lat) &&
+      !isNaN(lon) &&
+      lat >= -90 &&
+      lat <= 90 &&
+      lon >= -180 &&
+      lon <= 180
+    );
+  }
+
+  // Validar coordenadas UTM
+  function isValidUTM(easting, northing) {
+    return (
+      !isNaN(easting) &&
+      !isNaN(northing) &&
+      easting >= 100000 &&
+      easting <= 900000 &&
+      northing >= 0 &&
+      northing <= 10000000
+    );
+  }
+
+  // Convertir geográficas a UTM
+  function geographicToUTM(lat, lon, zone, hemisphere) {
+    const latRad = (lat * Math.PI) / 180;
+    const lonRad = (lon * Math.PI) / 180;
+    const centralMeridian = getCentralMeridian(zone);
+    const falseNorthing = hemisphere === "S" ? 10000000 : 0;
+
+    const N =
+      EQUATORIAL_RADIUS /
+      Math.sqrt(1 - ECCENTRICITY_SQUARED * Math.sin(latRad) ** 2);
+    const T = Math.tan(latRad) ** 2;
+    const C =
+      (ECCENTRICITY_SQUARED * Math.cos(latRad) ** 2) /
+      (1 - ECCENTRICITY_SQUARED);
+    const A = Math.cos(latRad) * (lonRad - centralMeridian);
+
+    const M =
+      EQUATORIAL_RADIUS *
+      ((1 - ECCENTRICITY_SQUARED / 4 - (3 * ECCENTRICITY_SQUARED ** 2) / 64) *
+        latRad -
+        ((3 * ECCENTRICITY_SQUARED) / 8 +
+          (3 * ECCENTRICITY_SQUARED ** 2) / 32) *
+          Math.sin(2 * latRad) +
+        ((15 * ECCENTRICITY_SQUARED ** 2) / 256) * Math.sin(4 * latRad));
+
+    const easting =
+      FALSE_EASTING +
+      SCALE_FACTOR *
+        N *
+        (A +
+          ((1 - T + C) * A ** 3) / 6 +
+          ((5 - 18 * T + T ** 2 + 72 * C - 58) * A ** 5) / 120);
+
+    const northing =
+      falseNorthing +
+      SCALE_FACTOR *
+        (M +
+          N *
+            Math.tan(latRad) *
+            (A ** 2 / 2 +
+              ((5 - T + 9 * C + 4 * C ** 2) * A ** 4) / 24 +
+              ((61 - 58 * T + T ** 2 + 600 * C - 330) * A ** 6) / 720));
+
+    return { easting, northing };
+  }
+
+  // Convertir UTM a geográficas
+  function UTMToGeographic(easting, northing, zone, hemisphere) {
+    const centralMeridian = getCentralMeridian(zone);
+    const falseNorthing = hemisphere === "S" ? 10000000 : 0;
+    const E = easting - FALSE_EASTING;
+    const N = northing - falseNorthing;
+
+    const M = N / SCALE_FACTOR;
+    const mu =
+      M /
+      (EQUATORIAL_RADIUS *
+        (1 - ECCENTRICITY_SQUARED / 4 - (3 * ECCENTRICITY_SQUARED ** 2) / 64));
+
+    const phi1 =
+      mu +
+      ((3 * ECCENTRICITY_SQUARED) / 2 - (27 * ECCENTRICITY_SQUARED ** 3) / 32) *
+        Math.sin(2 * mu) +
+      ((21 * ECCENTRICITY_SQUARED ** 2) / 16 -
+        (55 * ECCENTRICITY_SQUARED ** 3) / 32) *
+        Math.sin(4 * mu) +
+      ((151 * ECCENTRICITY_SQUARED ** 3) / 96) * Math.sin(6 * mu);
+
+    const N1 =
+      EQUATORIAL_RADIUS /
+      Math.sqrt(1 - ECCENTRICITY_SQUARED * Math.sin(phi1) ** 2);
+    const T1 = Math.tan(phi1) ** 2;
+    const C1 =
+      (ECCENTRICITY_SQUARED * Math.cos(phi1) ** 2) / (1 - ECCENTRICITY_SQUARED);
+    const R1 =
+      (EQUATORIAL_RADIUS * (1 - ECCENTRICITY_SQUARED)) /
+      (1 - ECCENTRICITY_SQUARED * Math.sin(phi1) ** 2) ** 1.5;
+    const D = E / (N1 * SCALE_FACTOR);
+
+    const lat =
+      phi1 -
+      ((N1 * Math.tan(phi1)) / R1) *
+        (D ** 2 / 2 -
+          ((5 + 3 * T1 + 10 * C1 - 4 * C1 ** 2 - 9 * ECCENTRICITY_SQUARED) *
+            D ** 4) /
+            24 +
+          ((61 +
+            90 * T1 +
+            298 * C1 +
+            45 * T1 ** 2 -
+            252 * ECCENTRICITY_SQUARED -
+            3 * C1 ** 2) *
+            D ** 6) /
+            720);
+
+    const lon =
+      centralMeridian +
+      (D -
+        ((1 + 2 * T1 + C1) * D ** 3) / 6 +
+        ((5 -
+          2 * C1 +
+          28 * T1 -
+          3 * C1 ** 2 +
+          8 * ECCENTRICITY_SQUARED +
+          24 * T1 ** 2) *
+          D ** 5) /
+          120) /
+        Math.cos(phi1);
+
+    return {
+      lat: (lat * 180) / Math.PI,
+      lon: (lon * 180) / Math.PI,
+    };
+  }
+
+  // Validación en tiempo real
+  function setupRealTimeValidation() {
+    document.getElementById("latInput").addEventListener("input", (e) => {
+      const value = parseFloat(e.target.value);
+      const error = document.getElementById("latError");
+      error.textContent =
+        value < -90 || value > 90 ? "Latitude must be between -90 and 90." : "";
+    });
+
+    document.getElementById("lonInput").addEventListener("input", (e) => {
+      const value = parseFloat(e.target.value);
+      const error = document.getElementById("lonError");
+      error.textContent =
+        value < -180 || value > 180
+          ? "Longitude must be between -180 and 180."
+          : "";
+    });
+
+    document.getElementById("eastingInput").addEventListener("input", (e) => {
+      const value = parseFloat(e.target.value);
+      const error = document.getElementById("eastingError");
+      error.textContent =
+        value < 100000 || value > 900000
+          ? "Easting must be between 100,000 and 900,000."
+          : "";
+    });
+
+    document.getElementById("northingInput").addEventListener("input", (e) => {
+      const value = parseFloat(e.target.value);
+      const error = document.getElementById("northingError");
+      error.textContent =
+        value < 0 || value > 10000000
+          ? "Northing must be between 0 and 10,000,000."
+          : "";
+    });
+  }
+
+  // Eventos
+  document.addEventListener("DOMContentLoaded", () => {
+    generateUTMZones();
+    setupRealTimeValidation();
+
+    const resultDiv = document.getElementById("conversionResult");
+
+    document.getElementById("convertToUTM").addEventListener("click", (e) => {
+      e.preventDefault();
+      const lat = parseFloat(document.getElementById("latInput").value);
+      const lon = parseFloat(document.getElementById("lonInput").value);
+      const zone = document.getElementById("utmZone").value;
+      const hemisphere = document.getElementById("hemisphere").value;
+
+      if (!isValidGeographic(lat, lon)) {
+        resultDiv.innerHTML =
+          '<div class="error-message">Invalid geographic coordinates.</div>';
+        return;
+      }
+
+      const utm = geographicToUTM(lat, lon, zone, hemisphere);
+      document.getElementById("eastingInput").value = utm.easting.toFixed(2);
+      document.getElementById("northingInput").value = utm.northing.toFixed(2);
+      resultDiv.innerHTML = `
+      <div class="result-item">
+        <strong>UTM Zone:</strong> ${zone}<br>
+        <strong>Easting:</strong> ${utm.easting.toFixed(2)} m<br>
+        <strong>Northing:</strong> ${utm.northing.toFixed(2)} m
+      </div>
+    `;
+    });
+
+    document
+      .getElementById("convertToGeographic")
+      .addEventListener("click", (e) => {
+        e.preventDefault();
+        const easting = parseFloat(
+          document.getElementById("eastingInput").value
+        );
+        const northing = parseFloat(
+          document.getElementById("northingInput").value
+        );
+        const zone = document.getElementById("utmZone").value;
+        const hemisphere = document.getElementById("hemisphere").value;
+
+        if (!isValidUTM(easting, northing)) {
+          resultDiv.innerHTML =
+            '<div class="error-message">Invalid UTM coordinates.</div>';
+          return;
+        }
+
+        const geo = UTMToGeographic(easting, northing, zone, hemisphere);
+        document.getElementById("latInput").value = geo.lat.toFixed(6);
+        document.getElementById("lonInput").value = geo.lon.toFixed(6);
+        resultDiv.innerHTML = `
+      <div class="result-item">
+        <strong>Latitude:</strong> ${geo.lat.toFixed(6)}°<br>
+        <strong>Longitude:</strong> ${geo.lon.toFixed(6)}°
+      </div>
+    `;
+      });
+
+    // Toggle para móviles
+    document.querySelector(".section-toggle").addEventListener("click", () => {
+      const content = document.getElementById("converterContent");
+      const icon = document.querySelector(".toggle-icon");
+      content.style.maxHeight = content.style.maxHeight
+        ? null
+        : `${content.scrollHeight}px`;
+      icon.textContent = content.style.maxHeight ? "▲" : "▼";
+    });
+  });
+</script>
+ 
+ <!-- The code above is a simple UTM converter that allows you to convert between geographic coordinates (latitude and longitude) and UTM coordinates. The converter is built using Astro components and includes real-time validation for the input fields. 
+ The converter consists of the following components: 
+ 
+ UTM Zone and Hemisphere:  Select the UTM zone and hemisphere (North or South). 
+ Geographic Coordinates:  Input fields for latitude and longitude in decimal degrees. 
+ UTM Coordinates:  Input fields for easting and northing in meters. 
+ Convert to UTM:  Button to convert geographic coordinates to UTM. 
+ Convert to Geographic:  Button to convert UTM coordinates to geographic. 
+ Conversion Result:  Display the converted UTM or geographic coordinates. 
+ 
+ The converter uses the WGS84 ellipsoid parameters to perform the conversion calculations. The  geographicToUTM  function converts geographic coordinates to UTM, while the  UTMToGeographic  function converts UTM coordinates to geographic. 
+ The converter also includes real-time validation for the input fields to ensure that the user enters valid coordinates. The validation checks that the latitude is between -90 and 90 degrees, the longitude is between -180 and 180 degrees, the easting is between 100,000 and 900,000 meters, and the northing is between 0 and 10,000,000 meters. 
+ The converter is designed to be responsive and includes a toggle button for mobile devices to show or hide the converter content. 
+ Conclusion 
+ Astro is a new static site generator that aims to simplify the process of building modern websites using a component-based architecture. In this tutorial, you learned how to create a simple UTM converter using Astro components. 
+ You can use Astro components to build reusable UI elements and interactive features for your website. By combining Astro components with real-time validation and conversion logic, you can create powerful tools and applications that enhance the user experience. 
+ To learn more about Astro, check out the  official documentation and explore the  Astro GitHub repository. 
+ Join our DigitalOcean community of over a million developers for free! Get help and share knowledge in our Questions & Answers section, find tutorials and tools that will help you grow as a developer and scale your project or business, and subscribe to topics of interest. 
+ Astro is a new static site generator that aims to simplify the process of building modern websites using a component-based architecture. In this tutorial, you will learn how to create a -->

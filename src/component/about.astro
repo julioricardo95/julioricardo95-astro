@@ -33,3 +33,37 @@
     <img class="section-about-img imgqs" src="/img/como.png" alt="como equipo"/>
   </div>
 </section>
+
+<style>
+  /*about*/
+.section-grid-about{
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+}
+.section-margin-about{
+    max-width: 600px;
+    margin: auto;
+}
+.julioricardo95{
+    text-align: justify;
+    background: var(--background);
+    box-shadow: var(--box-shadow);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 15px 20px 15px 20px;
+    margin: 15px 0px 15px 0px;
+}
+@media(max-width:450px){
+    .section-grid-about{
+        grid-template-columns: 1fr; 
+    }
+    .julioricardo95{
+        padding: 20px 20px 20px 20px;
+        margin: 10px 10px 0px 10px;
+    }
+}
+.section-about-img{
+    width: 100%;
+}
+/*about*/
+</style>

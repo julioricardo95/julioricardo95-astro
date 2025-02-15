@@ -1,0 +1,809 @@
+---
+
+---
+
+<!-- Mapa -->
+<section id="map" class="map-container"></section>
+
+<!-- Panel de control -->
+<section class="mobile-section control-panel">
+  <button class="section-toggle" aria-controls="controlContent">
+    <h3>Tracking Controls</h3>
+    <span class="toggle-icon">▼</span>
+  </button>
+  <div id="controlContent" class="section-content">
+    <div class="status-panel">
+      <div id="coordinates" class="status-item">Waiting for location...</div>
+      <div id="speed" class="status-item">Speed: -- km/h</div>
+      <div id="heading" class="status-item">Heading: --°</div>
+    </div>
+
+    <div class="button-group">
+      <button id="startTracking" class="action-button">Start Tracking</button>
+      <button id="stopTracking" class="action-button" disabled
+        >Stop Tracking</button
+      >
+      <button id="exportJSON" class="action-button">Export JSON</button>
+      <button id="exportTXT" class="action-button">Export TXT</button>
+      <button id="exportCSV" class="action-button">Export CSV</button>
+      <button id="exportKML" class="action-button">Export KML</button>
+    </div>
+
+    <div class="settings">
+      <label class="input-label">
+        Geofence Radius (meters)
+        <input
+          type="range"
+          id="geofenceRadius"
+          class="range-input"
+          min="10"
+          max="10000"
+          value="100"
+        />
+        <span id="radiusValue">100m</span>
+      </label>
+    </div>
+  </div>
+</section>
+
+<!-- Panel de búsqueda -->
+<section class="mobile-section search-panel">
+  <button class="section-toggle" aria-controls="searchContent">
+    <h3>Location Search</h3>
+    <span class="toggle-icon">▼</span>
+  </button>
+  <div id="searchContent" class="section-content">
+    <div class="search-inputs">
+      <div class="coordinate-inputs">
+        <label class="input-label">
+          Latitude
+          <input
+            type="number"
+            id="searchLat"
+            placeholder="Enter latitude"
+            step="any"
+            class="touch-input"
+          />
+        </label>
+        <label class="input-label">
+          Longitude
+          <input
+            type="number"
+            id="searchLon"
+            placeholder="Enter longitude"
+            step="any"
+            class="touch-input"
+          />
+        </label>
+      </div>
+      <label class="input-label">
+        Coordinate Format
+        <select id="coordFormat" class="touch-input">
+          <option value="decimal">Decimal Degrees</option>
+          <option value="dms">Degrees/Minutes/Seconds</option>
+        </select>
+      </label>
+      <button id="searchLocation" class="action-button">
+        Search Location
+      </button>
+    </div>
+    <div id="searchResult" class="search-result"></div>
+  </div>
+</section>
+
+<script>
+  const MAX_LOCATIONS = 100;
+  let tracking = false;
+  let watchId = null;
+  let map;
+  let currentMarker;
+  let routeLine;
+  let geofenceCircle;
+  let lastValidLocation = null;
+  let baseLayers = {};
+  let overlayLayers = {};
+
+  // Initialize tracking system
+  function initSystem() {
+    // Wait for document and Leaflet to be ready
+    if (typeof L === "undefined") {
+      setTimeout(initSystem, 100);
+      return;
+    }
+
+    // Initialize map
+    map = L.map("map").setView([0, 0], 13);
+
+    // Define base layers
+    baseLayers = {
+      OpenStreetMap: L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution: "© OpenStreetMap contributors",
+        }
+      ),
+      Satellite: L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          attribution: "© Esri",
+        }
+      ),
+      Topographic: L.tileLayer(
+        "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+        {
+          attribution: "© OpenTopoMap",
+        }
+      ),
+      Cycling: L.tileLayer(
+        "https://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=YOUR_API_KEY",
+        {
+          attribution: "© Thunderforest",
+        }
+      ),
+    };
+
+    // Add default layer
+    baseLayers["OpenStreetMap"].addTo(map);
+
+    // Add layer control
+    L.control.layers(baseLayers, overlayLayers).addTo(map);
+
+    // Add scale and compass
+    L.control.scale({ imperial: false, metric: true }).addTo(map);
+    addCompassRose();
+
+    // Initialize route line
+    routeLine = L.polyline([], { color: "blue", weight: 3 }).addTo(map);
+
+    // Try to get initial position
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          map.setView([latitude, longitude], 15);
+        },
+        (error) => console.warn("Error getting initial position:", error)
+      );
+    }
+  }
+
+  function addCompassRose() {
+    const compassControl = L.control({
+      position: "topright",
+    });
+
+    compassControl.onAdd = function () {
+      const div = L.DomUtil.create("div", "compass");
+      div.innerHTML =
+        '<img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/Compass_Rose_English_North.svg" alt="Compass" style="width: 50px; height: 50px;">';
+      return div;
+    };
+
+    compassControl.addTo(map);
+  }
+
+  // Validate coordinates
+  function validateCoordinates(lat, lon) {
+    return lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
+  }
+
+  // Calculate speed and heading
+  function calculateMovement(current, previous) {
+    if (!previous) return { speed: 0, heading: 0 };
+
+    const R = 6371000; // Earth's radius in meters
+    const φ1 = (previous.lat * Math.PI) / 180;
+    const φ2 = (current.lat * Math.PI) / 180;
+    const Δφ = ((current.lat - previous.lat) * Math.PI) / 180;
+    const Δλ = ((current.lon - previous.lon) * Math.PI) / 180;
+
+    // Distance calculation using haversine formula
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+
+    // Time difference in hours
+    const timeDiff = (current.timestamp - previous.timestamp) / (1000 * 3600);
+
+    // Speed in km/h
+    const speed = distance / 1000 / timeDiff;
+
+    // Heading calculation
+    const y = Math.sin(Δλ) * Math.cos(φ2);
+    const x =
+      Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+    const heading = ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
+
+    return { speed, heading };
+  }
+
+  // Update location history
+  function updateLocationHistory(position) {
+    const { latitude, longitude } = position.coords;
+
+    if (!validateCoordinates(latitude, longitude)) {
+      console.warn("Invalid coordinates received");
+      return;
+    }
+
+    const currentLocation = {
+      lat: latitude,
+      lon: longitude,
+      timestamp: Date.now(),
+    };
+
+    let locations = JSON.parse(localStorage.getItem("locationHistory") || "[]");
+
+    // Calculate movement data
+    const movement = calculateMovement(currentLocation, locations[0]);
+    currentLocation.speed = movement.speed;
+    currentLocation.heading = movement.heading;
+
+    // Update history
+    locations.unshift(currentLocation);
+    if (locations.length > MAX_LOCATIONS) {
+      locations = locations.slice(0, MAX_LOCATIONS);
+    }
+
+    localStorage.setItem("locationHistory", JSON.stringify(locations));
+
+    // Update UI
+    updateDisplay(currentLocation, movement);
+    updateMap(currentLocation, locations);
+    checkGeofence(currentLocation);
+  }
+
+  function updateDisplay(location, movement) {
+    document.getElementById("coordinates").textContent =
+      `Lat: ${location.lat.toFixed(6)} | Lon: ${location.lon.toFixed(6)}`;
+    document.getElementById("speed").textContent =
+      `Speed: ${movement.speed.toFixed(1)} km/h`;
+    document.getElementById("heading").textContent =
+      `Heading: ${movement.heading.toFixed(1)}°`;
+  }
+
+  function updateMap(location, locations) {
+    // Update current position marker
+    if (!currentMarker) {
+      currentMarker = L.marker([location.lat, location.lon]).addTo(map);
+    } else {
+      currentMarker.setLatLng([location.lat, location.lon]);
+    }
+
+    // Update route line
+    const routeCoords = locations.map((loc) => [loc.lat, loc.lon]);
+    routeLine.setLatLngs(routeCoords);
+
+    // Center map if this is first position
+    if (!lastValidLocation) {
+      map.setView([location.lat, location.lon], 15);
+    }
+
+    lastValidLocation = location;
+  }
+
+  function checkGeofence(location) {
+    if (!lastValidLocation || !geofenceCircle) return;
+
+    const radius = Number(document.getElementById("geofenceRadius").value);
+    const distance = map.distance(
+      [lastValidLocation.lat, lastValidLocation.lon],
+      [location.lat, location.lon]
+    );
+
+    if (distance > radius) {
+      notify(`Target has moved ${distance.toFixed(0)}m outside the geofence!`);
+    }
+  }
+
+  function notify(message) {
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification("Location Alert", { body: message });
+    } else if (
+      "Notification" in window &&
+      Notification.permission !== "denied"
+    ) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("Location Alert", { body: message });
+        }
+      });
+    }
+  }
+
+  function startTracking() {
+    if (!tracking && "geolocation" in navigator) {
+      tracking = true;
+      document.getElementById("startTracking").disabled = true;
+      document.getElementById("stopTracking").disabled = false;
+
+      // Set up geofence
+      const radius = Number(document.getElementById("geofenceRadius").value);
+      if (lastValidLocation) {
+        geofenceCircle = L.circle(
+          [lastValidLocation.lat, lastValidLocation.lon],
+          { radius, color: "red", fillColor: "#f03", fillOpacity: 0.2 }
+        ).addTo(map);
+      }
+
+      watchId = navigator.geolocation.watchPosition(
+        updateLocationHistory,
+        (error) => console.warn("Error:", error),
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 5000,
+        }
+      );
+    }
+  }
+
+  function stopTracking() {
+    if (tracking) {
+      tracking = false;
+      document.getElementById("startTracking").disabled = false;
+      document.getElementById("stopTracking").disabled = true;
+
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+
+      if (geofenceCircle) {
+        geofenceCircle.remove();
+        geofenceCircle = null;
+      }
+    }
+  }
+
+  function exportData(format) {
+    const locations = JSON.parse(
+      localStorage.getItem("locationHistory") || "[]"
+    );
+    let content, filename, type;
+
+    if (format === "json") {
+      content = JSON.stringify(locations, null, 2);
+      filename = "location_history.json";
+      type = "application/json";
+    } else if (format === "txt") {
+      content = locations
+        .map(
+          (loc, i) =>
+            `Location ${i + 1}:\n` +
+            `Timestamp: ${new Date(loc.timestamp).toISOString()}\n` +
+            `Latitude: ${loc.lat.toFixed(6)}\n` +
+            `Longitude: ${loc.lon.toFixed(6)}\n` +
+            `Speed: ${loc.speed?.toFixed(1) || 0} km/h\n` +
+            `Heading: ${loc.heading?.toFixed(1) || 0}°\n`
+        )
+        .join("\n");
+      filename = "location_history.txt";
+      type = "text/plain";
+    } else if (format === "csv") {
+      content =
+        "Timestamp,Latitude,Longitude,Speed (km/h),Heading\n" +
+        locations
+          .map(
+            (loc) =>
+              `${new Date(loc.timestamp).toISOString()},${loc.lat.toFixed(6)},${loc.lon.toFixed(6)},${loc.speed?.toFixed(1) || 0},${loc.heading?.toFixed(1) || 0}`
+          )
+          .join("\n");
+      filename = "location_history.csv";
+      type = "text/csv";
+    } else if (format === "kml") {
+      content = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Location History</name>
+    ${locations
+      .map(
+        (loc, i) => `
+    <Placemark>
+      <name>Location ${i + 1}</name>
+      <description>
+        Timestamp: ${new Date(loc.timestamp).toISOString()}
+        Speed: ${loc.speed?.toFixed(1) || 0} km/h
+        Heading: ${loc.heading?.toFixed(1) || 0}°
+      </description>
+      <Point>
+        <coordinates>${loc.lon.toFixed(6)},${loc.lat.toFixed(6)},0</coordinates>
+      </Point>
+    </Placemark>
+    `
+      )
+      .join("\n")}
+  </Document>
+</kml>`;
+      filename = "location_history.kml";
+      type = "application/vnd.google-earth.kml+xml";
+    }
+
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Convert decimal degrees to DMS format
+  function decimalToDMS(decimal) {
+    const degrees = Math.floor(Math.abs(decimal));
+    const minutesDecimal = (Math.abs(decimal) - degrees) * 60;
+    const minutes = Math.floor(minutesDecimal);
+    const seconds = ((minutesDecimal - minutes) * 60).toFixed(2);
+    const direction = decimal >= 0 ? ["N", "E"] : ["S", "W"];
+
+    return {
+      degrees,
+      minutes,
+      seconds: parseFloat(seconds),
+      direction: direction[Math.abs(decimal) === decimal ? 0 : 1],
+    };
+  }
+
+  // Format coordinates in the selected format
+  function formatCoordinates(lat, lon, format = "decimal") {
+    if (format === "decimal") {
+      return `${lat.toFixed(6)}°, ${lon.toFixed(6)}°`;
+    } else {
+      const latDMS = decimalToDMS(lat);
+      const lonDMS = decimalToDMS(lon);
+      return (
+        `${latDMS.degrees}°${latDMS.minutes}'${latDMS.seconds}"${latDMS.direction}, ` +
+        `${lonDMS.degrees}°${lonDMS.minutes}'${lonDMS.seconds}"${lonDMS.direction}`
+      );
+    }
+  }
+
+  // Search location by coordinates
+  async function searchLocation(lat, lon, format = "decimal") {
+    try {
+      // Validate coordinates
+      if (!validateCoordinates(lat, lon)) {
+        throw new Error(
+          "Invalid coordinates. Latitude must be between -90 and 90, longitude between -180 and 180."
+        );
+      }
+
+      // Create search marker if it doesn't exist
+      if (!window.searchMarker) {
+        window.searchMarker = L.marker([lat, lon]).addTo(map);
+      } else {
+        window.searchMarker.setLatLng([lat, lon]);
+      }
+
+      // Center map on searched location
+      map.setView([lat, lon], 15);
+
+      // Reverse geocode using Nominatim
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch location data");
+      }
+
+      const data = await response.json();
+
+      // Update search result display
+      const resultElement = document.getElementById("searchResult");
+      resultElement.innerHTML = `
+      <div class="result-item">
+        <strong>Coordinates:</strong> ${formatCoordinates(lat, lon, format)}
+      </div>
+      <div class="result-item">
+        <strong>Address:</strong> ${data.display_name}
+      </div>
+    `;
+    } catch (error) {
+      document.getElementById("searchResult").innerHTML = `
+      <div class="error-message">
+        ${error.message}
+      </div>
+    `;
+    }
+  }
+
+  // Initialize system
+  document.addEventListener("DOMContentLoaded", () => {
+    initSystem();
+
+    // Set up event listeners
+    document
+      .getElementById("startTracking")
+      .addEventListener("click", startTracking);
+    document
+      .getElementById("stopTracking")
+      .addEventListener("click", stopTracking);
+    document
+      .getElementById("exportJSON")
+      .addEventListener("click", () => exportData("json"));
+    document
+      .getElementById("exportTXT")
+      .addEventListener("click", () => exportData("txt"));
+    document
+      .getElementById("exportCSV")
+      .addEventListener("click", () => exportData("csv"));
+    document
+      .getElementById("exportKML")
+      .addEventListener("click", () => exportData("kml"));
+
+    // Update geofence when radius changes
+    document.getElementById("geofenceRadius").addEventListener("change", () => {
+      if (geofenceCircle && lastValidLocation) {
+        const radius = Number(document.getElementById("geofenceRadius").value);
+        geofenceCircle.setRadius(radius);
+      }
+    });
+
+    // Add search functionality
+    document.getElementById("searchLocation").addEventListener("click", () => {
+      const lat = parseFloat(document.getElementById("searchLat").value);
+      const lon = parseFloat(document.getElementById("searchLon").value);
+      const format = document.getElementById("coordFormat").value;
+
+      if (isNaN(lat) || isNaN(lon)) {
+        document.getElementById("searchResult").innerHTML = `
+        <div class="error-message">
+          Please enter valid latitude and longitude values.
+        </div>
+      `;
+        return;
+      }
+
+      searchLocation(lat, lon, format);
+    });
+
+    // Mobile-specific enhancements
+    document.querySelectorAll(".section-toggle").forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const content = document.getElementById(
+          toggle.getAttribute("aria-controls")
+        );
+        const icon = toggle.querySelector(".toggle-icon");
+
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+          icon.textContent = "▼";
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+          icon.textContent = "▲";
+        }
+      });
+    });
+
+    // Update radius value display
+    const radiusInput = document.getElementById("geofenceRadius");
+    const radiusValue = document.getElementById("radiusValue");
+    radiusInput.addEventListener("input", () => {
+      radiusValue.textContent = `${radiusInput.value}m`;
+    });
+
+    // Add touch gesture support for map
+    if (map) {
+      map.on("load", () => {
+        // Enable smooth touch scrolling
+        map.scrollWheelZoom.disable();
+        map.dragging.enable();
+        map.touchZoom.enable();
+        map.doubleClickZoom.enable();
+        map.boxZoom.disable();
+      });
+    }
+  });
+</script>
+
+<style is:global>
+  :root {
+  /* Colores */
+  --color-primary: #6200ee;
+  --color-primary-hover: #3700b3;
+  --color-secondary: #03dac6;
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-text: #ffffff;
+  --color-text-secondary: #bbbbbb;
+  --color-border: #333333;
+  --color-error: #cf6679;
+  --color-success: #4caf50;
+
+  /* Tamaños de fuente */
+  --font-size-small: 0.9rem;
+  --font-size-medium: 1rem;
+  --font-size-large: 1.1rem;
+  --font-size-monospace: 16px;
+
+  /* Espaciado */
+  --spacing-small: 0.5rem;
+  --spacing-medium: 0.8rem;
+  --spacing-large: 1rem;
+  --spacing-extra-large: 1.2rem;
+
+  /* Bordes */
+  --border-radius-small: 8px;
+  --border-radius-medium: 12px;
+
+  /* Alturas */
+  --min-height-touch: 44px;
+  --min-height-touch-mobile: 48px;
+}
+
+/* Base styles */
+.tracking-system {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+  padding: var(--spacing-large);
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--color-background);
+}
+
+/* Mobile sections */
+.mobile-section {
+  background: var(--color-surface);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+}
+
+.section-toggle {
+  width: 100%;
+  padding: var(--spacing-large);
+  background: var(--color-surface);
+  border: none;
+  color: var(--color-text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  min-height: var(--min-height-touch);
+}
+
+.section-toggle h3 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--color-text);
+}
+
+.toggle-icon {
+  font-size: var(--font-size-medium);
+  transition: transform 0.3s;
+  color: var(--color-text);
+}
+
+.section-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  padding: 0 var(--spacing-large);
+}
+
+/* Touch-friendly inputs */
+.touch-input {
+  min-height: var(--min-height-touch);
+  padding: var(--spacing-medium);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-small);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-monospace);
+  width: 100%;
+  margin-top: var(--spacing-small);
+}
+
+.input-label {
+  display: block;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-large);
+  font-size: var(--font-size-small);
+}
+
+/* Action buttons */
+.action-button {
+  min-height: var(--min-height-touch);
+  padding: var(--spacing-medium) var(--spacing-extra-large);
+  background: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-monospace);
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+  margin-bottom: var(--spacing-small);
+}
+
+.action-button:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+}
+
+/* Map container */
+.map-container {
+  height: 50vh;
+  min-height: 300px;
+  width: 100%;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+/* Status display */
+.status-item {
+  background: var(--color-surface);
+  padding: var(--spacing-medium);
+  border-radius: var(--border-radius-small);
+  margin-bottom: var(--spacing-small);
+  font-family: monospace;
+  font-size: var(--font-size-monospace);
+  color: var(--color-text);
+}
+
+/* Range input styling */
+.range-input {
+  width: 100%;
+  margin-top: var(--spacing-small);
+  height: var(--min-height-touch);
+  padding: var(--spacing-large) 0;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .tracking-system {
+    padding: var(--spacing-small);
+  }
+
+  .coordinate-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-large);
+  }
+
+  .button-group {
+    display: grid;
+    gap: var(--spacing-small);
+  }
+
+  .status-item {
+    font-size: 14px;
+    padding: var(--spacing-medium);
+  }
+
+  /* Improve touch targets */
+  .action-button,
+  .touch-input {
+    min-height: var(--min-height-touch-mobile);
+  }
+}
+
+/* High contrast and accessibility */
+@media (prefers-contrast: high) {
+  .action-button {
+    background: var(--color-text);
+    color: var(--color-background);
+    border: 2px solid var(--color-background);
+  }
+
+  .status-item {
+    border: 2px solid var(--color-text);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .section-content {
+    transition: none;
+  }
+}
+</style>

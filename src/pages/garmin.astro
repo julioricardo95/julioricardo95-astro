@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/LayoutGarmin.astro';
+import TrackingSystem from '../component/TrackingSystem.astro';
+import CoordinateConverter from '../component/CoordinateConverter.astro';
+
+---
+
+<Layout title="GPS Tracking System">
+	<main class="tracking-system" >
+		<h1>GPS <span class="text-gradient">Tracking</span> System</h1>
+		<TrackingSystem />
+		<CoordinateConverter/>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	h1 {
+		font-size: 3rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+	}
+	.text-gradient {
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+	.instructions {
+		margin-bottom: 2rem;
+		border: 1px solid rgba(var(--accent-light), 25%);
+		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		padding: 1.5rem;
+		border-radius: 8px;
+	}
+	@media (max-width: 768px) {
+		main {
+			padding: 0.5rem;
+			font-size: 16px;
+		}
+		h1 {
+			font-size: 2rem;
+		}
+		.instructions {
+			padding: 1rem;
+			margin-bottom: 1rem;
+		}
+	}
+</style>

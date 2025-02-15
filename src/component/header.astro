@@ -49,3 +49,211 @@
     
   </div>
 </header>
+
+<style>
+  :root {
+    /* Colores */
+    --color-primary: hsla(16, 12%, 59%, 0.4); /* Color principal */
+    --color-primary-hover: hsla(16, 12%, 10%, 0.4); /* Color al hacer hover */
+    --color-text: white; /* Color del texto */
+    --color-text-hover: hsl(0, 0%, 80%); /* Color del texto al hacer hover */
+    --color-shadow: hsla(16, 50%, 25%, 0.3); /* Color de sombra */
+    --color-shadow-hover: hsla(16, 50%, 10%, 0.3); /* Color de sombra al hacer hover */
+    --color-background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+    --color-background-mobile: hsla(16, 12%, 15%, 0.3); /* Fondo para móviles */
+    --color-icon: hsl(0, 0%, 100%); /* Color de íconos */
+    --color-icon-hover: hsl(0, 0%, 60%); /* Color de íconos al hacer hover */
+
+    /* Tamaños */
+    --font-size-default: 1.5rem; /* Tamaño de fuente predeterminado */
+    --font-size-mobile: 1.3rem; /* Tamaño de fuente para móviles */
+    --border-radius: 20px; /* Radio de borde */
+    --border-radius-mobile: 3px; /* Radio de borde para móviles */
+    --padding-default: 5px 10px; /* Padding predeterminado */
+    --padding-mobile: 1px 10px; /* Padding para móviles */
+
+    /* Transiciones */
+    --transition-speed: 0.5s; /* Velocidad de transición */
+}
+
+/* Estilos generales */
+.header {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    background: white url(/img/oficina.jpg) no-repeat center top;
+    background-size: cover;
+    backdrop-filter: blur(20px);
+    min-height: 120px;
+}
+
+.header-navigation {
+    display: flex;
+    justify-content: space-around;
+    background: var(--color-background);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 5px 1px var(--color-shadow);
+    padding: 10px 0;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header-section-flex {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Logo */
+.header-section-logo {
+    justify-content: center;
+}
+
+.header-logo {
+    width: 50px;
+    height: 50px;
+    transition: all var(--transition-speed) ease;
+}
+
+.header-logo:hover {
+    border-radius: 25px;
+    box-shadow: 0px 0px 3px 2px hsla(32, 70%, 34%, 0.5);
+    transform: scale(1.1);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Barra de navegación */
+.header-section-ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header-section-li {
+    margin: 0 10px;
+}
+
+.header-section-a {
+    background: var(--color-primary);
+    box-shadow: 0 2px 2px 1px var(--color-shadow);
+    padding: var(--padding-default);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-default);
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all var(--transition-speed) ease;
+    text-align: center;
+}
+
+.header-section-a:hover {
+    background: var(--color-primary-hover);
+    box-shadow: 0 2px 2px 1px var(--color-shadow-hover);
+    color: var(--color-text-hover);
+    transform: translateY(-3px);
+}
+
+/* Íconos */
+.header-section-a i {
+    margin-right: 5px;
+}
+
+#menu-icon {
+    font-size: 35px;
+    color: var(--color-icon);
+    cursor: pointer;
+    z-index: 10001;
+    margin: auto 0;
+    font-weight: bold;
+    display: none;
+    transition: color var(--transition-speed) ease;
+}
+
+#menu-icon:hover {
+    color: var(--color-icon-hover);
+}
+
+/* Estilos para móviles */
+@media (max-width: 700px) {
+    #menu-icon {
+        display: block;
+    }
+
+    .header-section-ul {
+        display: none;
+        transition: all var(--transition-speed) ease;
+    }
+
+    .header-section-ul.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        right: 5%;
+        background: var(--color-background-mobile);
+        border-radius: var(--border-radius);
+        padding: 10px 2px;
+        top: 120%;
+        backdrop-filter: blur(10px);
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .header-section-li {
+        margin: 5px auto;
+    }
+
+    .header-section-a {
+        background: var(--color-background-mobile);
+        padding: var(--padding-mobile);
+        font-size: var(--font-size-mobile);
+        display: block;
+    }
+
+    .header-flex {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-mg-i {
+        padding: 4px;
+        border-radius: var(--border-radius-mobile);
+    }
+}
+</style>

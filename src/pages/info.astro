@@ -9,7 +9,8 @@ import Navigation from "../component/navigation.astro";
   </Navigation>
   <section class="section info section-info">
     <h1 class="h1-info">julioricardo95</h1>
-    <div class="div-info">
+
+    <div class="div-info" id="publicidad">
       <h2 class="h2-info">agencia de publicidad</h2>
       <p class="p-info">
         En nuestra agencia de marketing y publicidad, nos comprometemos con
@@ -63,7 +64,7 @@ import Navigation from "../component/navigation.astro";
       </p>
     </div>
 
-    <div class="div-info">
+    <div class="div-info" id="imagen">
       <h2 class="h2-info">Imagen</h2>
       <p class="p-info">
         Creación de contenido gráfico para satisfacer todas las necesidades de
@@ -79,7 +80,7 @@ import Navigation from "../component/navigation.astro";
       </p>
     </div>
 
-    <div class="div-info">
+    <div class="div-info" id="video">
       <h2 class="h2-info">Video</h2>
       <p class="p-info">
         Creación y edición de audiovisuales para satisfacer todas las
@@ -102,7 +103,7 @@ import Navigation from "../component/navigation.astro";
       </p>
     </div>
 
-    <div class="div-info">
+    <div class="div-info" id="google">
       <h2 class="h2-info">Google my Business</h2>
       <p class="p-info">
         Integración en el buscador de Google y otros. Configuración de seo de tu
@@ -161,7 +162,7 @@ import Navigation from "../component/navigation.astro";
       </ul>
     </div>
 
-    <div class="div-info">
+    <div class="div-info" id="ads">
       <h2 class="h2-info">Ads</h2>
       <p class="p-info">
         Si buscas una forma efectiva de darte a conocer en poco tiempo o lograr
@@ -223,7 +224,7 @@ import Navigation from "../component/navigation.astro";
       </p>
     </div>
 
-    <div class="div-info">
+    <div class="div-info" >
       <p class="p-info">
         Entendemos que el tiempo es un recurso valioso en el mundo empresarial,
         por lo que trabajamos de manera eficiente y efectiva para ofrecerte
@@ -244,3 +245,208 @@ import Navigation from "../component/navigation.astro";
     </div>
   </section>
 </Layouts>
+
+<style>
+  :root {
+    --background: hsla(0, 0%, 100%, 0.6);
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    --primary-color: #007bff;
+    --secondary-color: #ffdd57;
+    --text-color: #333;
+    --hover-color: #0056b3;
+}
+
+/* Barra de navegación */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: var(--primary-color);
+    box-shadow: var(--box-shadow);
+    z-index: 1000;
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.nav-list li {
+    margin: 0 15px;
+}
+
+.nav-list a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-list a:hover {
+    color: var(--secondary-color);
+    transform: scale(1.1);
+}
+
+/* Secciones */
+.section-info {
+    max-width: 800px;
+    margin: 80px auto 20px;
+    padding: 20px;
+}
+
+.div-info {
+    background: var(--background);
+    box-shadow: var(--box-shadow);
+    border-radius: 25px;
+    margin: 20px 0;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.div-info:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.h1-info {
+    color: var(--primary-color);
+    text-align: center;
+    font-size: clamp(1.8rem, -0.875rem + 8.333333vw, 2.5rem);
+    margin-top: 50px;
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.h2-info {
+    text-transform: capitalize;
+    font-weight: 600;
+    font-size: clamp(1.2rem, -0.875rem + 8.333333vw, 2.4rem);
+    text-align: left;
+    margin: 0;
+    color: var(--primary-color);
+    animation: fadeIn 1s ease-out;
+}
+
+.h3-info {
+    font-size: large;
+    text-transform: capitalize;
+    font-size: clamp(0.8rem, -0.875rem + 8.333333vw, 2rem);
+    color: var(--primary-color);
+}
+
+.p-info {
+    margin: 15px 0 0 0;
+    color: var(--text-color);
+    animation: fadeIn 1.5s ease-out;
+}
+
+.ul-info {
+    margin: 0 0 0 20px;
+    list-style-type: disc;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    margin-top: 40px;
+    animation: fadeInUp 1s ease-out;
+}
+
+/* Animaciones adicionales */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Botones o elementos interactivos */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.button:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-3px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-list {
+        flex-direction: column;
+        height: auto;
+        padding: 10px 0;
+    }
+
+    .nav-list li {
+        margin: 10px 0;
+    }
+
+    .section-info {
+        margin-top: 120px;
+    }
+
+    .h1-info {
+        font-size: 2rem;
+    }
+
+    .h2-info {
+        font-size: 1.5rem;
+    }
+
+    .h3-info {
+        font-size: 1.2rem;
+    }
+}
+</style>
