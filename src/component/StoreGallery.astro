@@ -1,0 +1,283 @@
+---
+import { products } from '../data/Storeproducts.json';
+import ProductCard from '../component/StoreProductCard.astro';
+---
+
+<div class="gallery-container">
+  <div class="filters">
+    <input 
+      type="text" 
+      id="searchInput" 
+      placeholder="Buscar por marca, modelo o tipo..."
+      class="search-input"
+    />
+    <select id="typeFilter" class="filter-select">
+      <option value="">Todos los tipos</option>
+      {[...new Set(products.map(p => p.TIPO))].sort().map(tipo => (     
+        <option value={tipo}>{tipo}</option>
+      ))}
+    </select>
+    <select id="brandFilter" class="filter-select">
+      <option value="">Todas las marcas</option>
+      {[...new Set(products.map(p => p.MARCA))].sort().map(marca => (
+        <option value={marca}>{marca}</option>
+      ))}
+    </select>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    {products.slice(0, 8).map(product => (
+      <div class="product-wrapper" 
+           data-tipo={product.TIPO.toLowerCase()}
+           data-marca={product.MARCA.toLowerCase()}
+           data-modelo={product.MODELO.toLowerCase()}
+           data-descripcion={product.DESCRIPCION.toLowerCase()}
+           >
+        <ProductCard product={product} />
+      </div>
+    ))}
+  </div>
+  
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <p>Cargando más productos...</p>
+  </div>
+</div>
+
+<script>
+  class ProductGallery {
+    products: NodeListOf<Element>;
+    productsGrid: HTMLElement | null;
+    loading: HTMLElement | null;
+    currentPage: number;
+    itemsPerPage: number;
+    isLoading: boolean;
+    allProductsLoaded: boolean;
+
+    constructor() {
+      this.products = document.querySelectorAll('.product-wrapper');
+      this.productsGrid = document.getElementById('productsGrid');
+      this.loading = document.getElementById('loading');
+      this.currentPage = 1;
+      this.itemsPerPage = 4;
+      this.isLoading = false;
+      this.allProductsLoaded = false;
+
+      this.initializeFilters();
+      this.initializeInfiniteScroll();
+    }
+
+    initializeFilters() {
+      const searchInput = document.getElementById('searchInput');
+      const typeFilter = document.getElementById('typeFilter');
+      const brandFilter = document.getElementById('brandFilter');
+
+      searchInput?.addEventListener('input', () => this.filterProducts());
+      typeFilter?.addEventListener('change', () => this.filterProducts());
+      brandFilter?.addEventListener('change', () => this.filterProducts());
+    }
+
+    initializeInfiniteScroll() {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !this.isLoading) {
+            this.loadMoreProducts();
+          }
+        },
+        { threshold: 0.1 }
+      );
+
+      if (this.loading) {
+        observer.observe(this.loading);
+      }
+    }
+
+    filterProducts() {
+      const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+      const typeFilter = document.getElementById('typeFilter') as HTMLSelectElement;
+      const brandFilter = document.getElementById('brandFilter') as HTMLSelectElement;
+      
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      const selectedType = typeFilter.value.toLowerCase();
+      const selectedBrand = brandFilter.value.toLowerCase();
+      
+      this.products.forEach((product) => {
+        const productData = {
+          tipo: product.getAttribute('data-tipo') || '',
+          marca: product.getAttribute('data-marca') || '',
+          modelo: product.getAttribute('data-modelo') || '',
+          descripcion: product.getAttribute('data-descripcion') || '',
+          color: product.getAttribute('data-color') || ''
+        };
+
+        const matchesSearch = !searchTerm || 
+          Object.values(productData).some(value => value.includes(searchTerm));
+
+        const matchesType = !selectedType || productData.tipo === selectedType;
+        const matchesBrand = !selectedBrand || productData.marca === selectedBrand;
+        
+        product.classList.toggle('hidden', !(matchesSearch && matchesType && matchesBrand));
+      });
+    }
+
+    async loadMoreProducts() {
+      if (this.isLoading || this.allProductsLoaded) return;
+
+      this.isLoading = true;
+      this.loading?.classList.remove('hidden');
+
+      try {
+        const response = await fetch('/src/data/products.json');
+        const data = await response.json();
+        
+        const startIndex = this.currentPage * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        const newProducts = data.products.slice(startIndex, endIndex);
+
+        if (newProducts.length === 0) {
+          this.allProductsLoaded = true;
+          return;
+        }
+
+        await this.renderNewProducts(newProducts);
+        this.currentPage++;
+        
+        // Dispatch event to initialize lazy loading for new products
+        document.dispatchEvent(new CustomEvent('productsLoaded'));
+      } catch (error) {
+        console.error('Error loading products:', error);
+      } finally {
+        this.isLoading = false;
+        this.loading?.classList.add('hidden');
+      }
+    }
+
+    async renderNewProducts(newProducts: Array<{ TIPO: string, MARCA: string, MODELO: string, DESCRIPCION: string, COLOR: string[], IMG: string, PRECIO: number }>) {
+      const fragment = document.createDocumentFragment();
+
+      newProducts.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.className = 'product-wrapper';
+        productElement.setAttribute('data-tipo', product.TIPO.toLowerCase());
+        productElement.setAttribute('data-marca', product.MARCA.toLowerCase());
+        productElement.setAttribute('data-modelo', product.MODELO.toLowerCase());
+        productElement.setAttribute('data-descripcion', product.DESCRIPCION.toLowerCase());
+        productElement.setAttribute('data-color', product.COLOR.join(',').toLowerCase());
+        
+        productElement.innerHTML = `
+          <div class="product-card">
+            <div class="product-image">
+              <img 
+                data-src="${product.IMG}" 
+                alt="${product.MARCA} ${product.MODELO}" 
+                class="lazy"
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 350 350'%3E%3Crect width='350' height='350' fill='%23f3f4f6'/%3E%3C/svg%3E"
+              />
+            </div>
+            <div class="product-info">
+              <h3>${product.MARCA} ${product.MODELO}</h3>
+              <p class="type">${product.TIPO}</p>
+              <p class="description">${product.DESCRIPCION}</p>
+              <div class="colors">
+                ${product.COLOR.map(color => `<span class="color-tag">${color}</span>`).join('')}
+              </div>
+              <p class="price">$${product.PRECIO.toFixed(2)}</p>
+            </div>
+          </div>
+        `;
+        
+        fragment.appendChild(productElement);
+      });
+
+      this.productsGrid?.appendChild(fragment);
+      this.products = document.querySelectorAll('.product-wrapper');
+    }
+  }
+
+  // Initialize the gallery
+  new ProductGallery();
+</script>
+
+<style>
+  .gallery-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .search-input,
+  .filter-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-input:focus,
+  .filter-select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  .search-input {
+    flex: 1;
+  }
+
+  .filter-select {
+    min-width: 150px;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 1rem;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 768px) {
+    .filters {
+      flex-direction: column;
+    }
+
+    .products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .gallery-container {
+      padding: 1rem;
+    }
+  }
+</style>

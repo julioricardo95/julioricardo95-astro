@@ -1,0 +1,155 @@
+---
+const { product } = Astro.props;
+---
+
+<div class="product-card">
+  <div class="product-image">
+    <img 
+      data-src={"/img/catalogo/"+product.IMG} 
+      alt={`${product.MARCA} ${product.MODELO}`} 
+      class="lazy"
+      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 350 350'%3E%3Crect width='350' height='350' fill='%23f3f4f6'/%3E%3C/svg%3E"
+    />
+  </div>
+  <div class="product-info">
+    <h3>{product.MARCA} {product.MODELO}</h3>
+    <p class="type">{product.TIPO}</p>
+    <p class="description">{product.DESCRIPCION}</p>
+    <p class="colors">
+      {product.COLOR.map((color: string) => (
+        <span class="color-tag">{color}</span>
+      ))}
+    </p>
+    <p class="price">${product.PRECIO.toFixed(2)}</p>
+  </div>
+</div>
+
+<script>
+  class LazyLoader {
+    private observer: IntersectionObserver;
+    private loadedImages: Set<Element>;
+
+    constructor() {
+      this.loadedImages = new Set();
+      this.observer = new IntersectionObserver(this.handleIntersection.bind(this), {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0.1
+      });
+
+      this.initializeLazyLoading();
+    }
+
+    private handleIntersection(entries: IntersectionObserverEntry[]) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target as HTMLImageElement;
+          if (!this.loadedImages.has(img)) {
+            this.loadImage(img);
+          }
+        }
+      });
+    }
+
+    private loadImage(img: HTMLImageElement) {
+      const src = img.getAttribute('data-src');
+      if (src) {
+        img.src = src;
+        img.classList.add('loaded');
+        this.loadedImages.add(img);
+        this.observer.unobserve(img);
+      }
+    }
+
+    private initializeLazyLoading() {
+      const lazyImages = document.querySelectorAll('img.lazy');
+      lazyImages.forEach(img => {
+        if (!this.loadedImages.has(img)) {
+          this.observer.observe(img);
+        }
+      });
+    }
+  }
+
+  // Initialize lazy loading
+  new LazyLoader();
+
+  // Re-initialize lazy loading when new products are added
+  document.addEventListener('productsLoaded', () => {
+    new LazyLoader();
+  });
+</script>
+
+<style>
+  .product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+
+  .product-image {
+    position: relative;
+    overflow: hidden;
+    background: #f3f4f6;
+  }
+
+  .product-image img {
+    width: 100%;
+    Aspect-ratio: 3/2;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .product-image img.loaded {
+    opacity: 1;
+  }
+
+  .product-info {
+    padding: 1.5rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .type {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+
+  .description {
+    color: #444;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0.75rem 0;
+  }
+
+  .colors {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 0.75rem 0;
+  }
+
+  .color-tag {
+    background: #f0f0f0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #555;
+  }
+
+  .price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2563eb;
+    margin: 0.75rem 0 0 0;
+  }
+</style>

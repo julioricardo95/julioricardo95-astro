@@ -1,0 +1,420 @@
+{
+    "products": [
+        {
+            "N": 1,
+            "TIPO": "Laptop",
+            "MARCA": "ASUS",
+            "MODELO": "F1400EA-SB34",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 10711.35,
+            "DESCRIPCION": "El ASUS F1400EA-SB34 es un portátil de 14 pulgadas con procesador Intel Core i3-1115G4, 8GB de RAM y SSD de 256GB. Ideal para multitareas, ofrece rendimiento rápido y confiable. Perfecto para estudiantes y profesionales que buscan eficiencia y portabilidad.",
+            "IMG": "ASUS-F1400EA.webp"
+        },
+        {
+            "N": 2,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "15-DY1031WN",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11864.88,
+            "DESCRIPCION": "El HP 15-DY1031WN combina rendimiento y portabilidad con un procesador Intel Core i3-1005G1 y pantalla de 15.6 pulgadas. Ideal para tareas diarias, navegación fluida y entretenimiento. Un dispositivo versátil y confiable para trabajar o estudiar.",
+            "IMG": "HP-14-DQ2031WM.webp"
+        },
+        {
+            "N": 3,
+            "TIPO": "Laptop",
+            "MARCA": "ASUS",
+            "MODELO": "F515EA-SB35",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11864.88,
+            "DESCRIPCION": "El ASUS F515EA-SB35 ofrece un rendimiento excepcional con su procesador Intel Core i3-1115G4 y pantalla de 15.6 pulgadas. Diseño elegante y amplia pantalla para trabajar, estudiar o disfrutar de entretenimiento. Potencia y portabilidad en un solo dispositivo.",
+            "IMG": "ASUS-F515EA-SB35.webp"
+        },
+        {
+            "N": 4,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "15-FC0039WN",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 12524,
+            "DESCRIPCION": "El HP 15-FC0039WN cuenta con un procesador AMD Ryzen 5 7520U y pantalla de 15.6 pulgadas. Diseñado para tareas exigentes, ofrece fluidez en trabajo y entretenimiento. Un portátil elegante y moderno para cualquier entorno.",
+            "IMG": "HP-EF2126WM.webp"
+        },
+        {
+            "N": 5,
+            "TIPO": "Laptop",
+            "MARCA": "LENOVO",
+            "MODELO": "82VG00BJUS",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 12688.8,
+            "DESCRIPCION": "El Lenovo 82VG00BJUS tiene un procesador AMD Ryzen 3 7320U y pantalla de 15.6 pulgadas. Ofrece eficiencia y rendimiento para trabajar, estudiar o disfrutar de entretenimiento. Diseño moderno y sofisticado para cualquier necesidad.",
+            "IMG": "HP-14-DQ2031WM.webp"
+        },
+        {
+            "N": 6,
+            "TIPO": "Laptop",
+            "MARCA": "ACER",
+            "MODELO": "A315-58-33XS",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 12194.46,
+            "DESCRIPCION": "El Acer A315-58-33XS ofrece un rendimiento excepcional con su procesador Intel Core i3-1115G4 y pantalla de 15.6 pulgadas. Ideal para tareas diarias, trabajo, estudio o entretenimiento. Diseño elegante y moderno para cualquier entorno.",
+            "IMG": "ACER-A315-56-596W.webp"
+        },
+        {
+            "N": 7,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "15-EG0070WM",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 20433.96,
+            "DESCRIPCION": "El HP 15-EG0070WM cuenta con un procesador Intel Core i7-1165G7 y pantalla de 15.6 pulgadas. Potente y eficiente, ideal para proyectos complejos, entretenimiento o navegación. Diseño elegante y sofisticado para cualquier entorno.",
+            "IMG": "HP-EF2126WM.webp"
+        },
+        {
+            "N": 8,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "EF2126WM",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11864.88,
+            "DESCRIPCION": "El HP EF2126WM tiene un procesador AMD Ryzen 5 5500U y pantalla de 15.6 pulgadas. Ofrece rendimiento excepcional para tareas intensivas, entretenimiento o navegación. Diseño moderno y elegante para cualquier entorno.",
+            "IMG": "HP-EF2126WM.webp"
+        },
+        {
+            "N": 9,
+            "TIPO": "Laptop",
+            "MARCA": "DELL ",
+            "MODELO": "LATITUDE-5420",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 13182.86,
+            "DESCRIPCION": "El Dell Latitude 5420 cuenta con un procesador Intel Core i7-1185G7 y pantalla de 14 pulgadas. Diseñado para profesionales, ofrece rendimiento superior y portabilidad. Ideal para trabajar en cualquier lugar con estilo y fiabilidad.",
+            "IMG": "DELL-LATITUDE-5420.webp"
+        },
+        {
+            "N": 10,
+            "TIPO": "Laptop",
+            "MARCA": "DELL ",
+            "MODELO": "LATITUDE-7330",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 14830.76,
+            "DESCRIPCION": "El Dell Latitude 7330 combina potencia y portabilidad con un procesador Intel Core i7-1265U y pantalla de 13.3 pulgadas. Ideal para profesionales en movimiento, ofrece rendimiento superior y diseño elegante para cualquier entorno.",
+            "IMG": "DELL-LATITUDE-7320.webp"
+        },
+        {
+            "N": 11,
+            "TIPO": "Laptop",
+            "MARCA": "DELL ",
+            "MODELO": "LATITUDE-7320",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11534.96,
+            "DESCRIPCION": "El Dell Latitude 7320 tiene un procesador Intel Core i5-1145G7 y pantalla de 13.3 pulgadas. Ofrece rendimiento excepcional para tareas diarias. Diseño resistente y elegante, ideal para profesionales en movimiento.",
+            "IMG": "DELL-LATITUDE-7320.webp"
+        },
+        {
+            "N": 12,
+            "TIPO": "Laptop",
+            "MARCA": "DELL ",
+            "MODELO": "LATITUDE-7330",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 12358.9,
+            "DESCRIPCION": "El Dell Latitude 7330 cuenta con un procesador Intel Core i5-1245U y pantalla de 13.3 pulgadas. Diseñado para profesionales, ofrece rendimiento superior y portabilidad. Ideal para trabajar en cualquier lugar con estilo y eficiencia.",
+            "IMG": "DELL-LATITUDE-7330.webp"
+        },
+        {
+            "N": 13,
+            "TIPO": "Laptop",
+            "MARCA": "HP ",
+            "MODELO": "15-DY2713ST",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11667.13,
+            "DESCRIPCION": "El HP 15-DY2713ST tiene un procesador Intel Core i3-1125G4 y pantalla de 15.6 pulgadas. Ideal para tareas diarias, trabajo, estudio o entretenimiento. Diseño moderno y elegante para cualquier entorno.",
+            "IMG": "HP-14-DQ2031WM.webp"
+        },
+        {
+            "N": 14,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "15-DY2791WN",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 13282,
+            "DESCRIPCION": "El HP 15-DY2791WN ofrece un rendimiento excepcional con su procesador Intel Core i3-1115G4 y pantalla de 15.6 pulgadas. Ideal para trabajar, estudiar o disfrutar de entretenimiento. Diseño elegante y moderno para cualquier entorno.",
+            "IMG": "HP-EF2126WM.webp"
+        },
+        {
+            "N": 15,
+            "TIPO": "Laptop",
+            "MARCA": "LENOVO",
+            "MODELO": "82QCX003US",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 12622,
+            "DESCRIPCION": "El Lenovo 82QCX003US tiene un procesador Intel Core i3-1215U y pantalla de 14 pulgadas. Ofrece eficiencia y portabilidad para tareas diarias. Diseño moderno y elegante, ideal para trabajar o estudiar en cualquier lugar.",
+            "IMG": "LENOVO-82QCX003US.webp"
+        },
+        {
+            "N": 16,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "15-DY2702DX",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 12886.5,
+            "DESCRIPCION": "El HP 15-DY2702DX cuenta con un procesador Intel Core i3-1115G4 y pantalla de 15.6 pulgadas. Ideal para tareas diarias, trabajo, estudio o entretenimiento. Diseño moderno y elegante para cualquier entorno.",
+            "IMG": "HP-EF2126WM.webp"
+        },
+        {
+            "N": 17,
+            "TIPO": "Laptop",
+            "MARCA": "HP TACTIL",
+            "MODELO": "15-DY4013DX",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 13315,
+            "DESCRIPCION": "El HP Táctil 15-DY4013DX tiene un procesador Intel Core i5-1155G7 y pantalla táctil de 15.6 pulgadas. Ofrece una experiencia interactiva y fluida para trabajar, estudiar o disfrutar de entretenimiento. Diseño moderno y funcional.",
+            "IMG": "HP-14-DQ2031WM.webp"
+        },
+        {
+            "N": 18,
+            "TIPO": "Laptop",
+            "MARCA": "HP TACTIL",
+            "MODELO": "15-DY2031NR",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11996,
+            "DESCRIPCION": "El HP Táctil 15-DY2031NR cuenta con un procesador Intel Core i3-1115G4 y pantalla táctil de 15.6 pulgadas. Ideal para tareas diarias, ofrece rendimiento y funcionalidad táctil. Diseño moderno y elegante para cualquier entorno.",
+            "IMG": "HP-14-DQ2031WM.webp"
+        },
+        {
+            "N": 19,
+            "TIPO": "Laptop",
+            "MARCA": "HP ",
+            "MODELO": "17-BY2053CL",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11996,
+            "DESCRIPCION": "El HP 17-BY2053CL tiene un procesador Intel Core i5-10210U y pantalla de 17.3 pulgadas. Ideal para productividad y entretenimiento, ofrece rendimiento superior y diseño elegante. Perfecto para trabajar o disfrutar de contenido multimedia.",
+            "IMG": "HP-EF2126WM.webp"
+        },
+        {
+            "N": 20,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "14-DQ2031WM",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11008,
+            "DESCRIPCION": "El HP 14-DQ2031WM cuenta con un procesador Intel Core i3-1115G4 y pantalla de 14 pulgadas. Ofrece rendimiento excepcional para tareas diarias. Diseño compacto y elegante, ideal para trabajar o estudiar en cualquier lugar.",
+            "IMG": "HP-EF2126WM.webp"
+        },
+        {
+            "N": 21,
+            "TIPO": "Laptop",
+            "MARCA": "LENOVO",
+            "MODELO": "82C401FFUS",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11008,
+            "DESCRIPCION": "El Lenovo 82C401FFUS tiene un procesador Intel Core i3-1005G1 y pantalla de 14 pulgadas. Ofrece eficiencia y portabilidad para tareas diarias. Diseño moderno y elegante, ideal para trabajar o estudiar en cualquier lugar.",
+            "IMG": "LENOVO-82C401FFUS.webp"
+        },
+        {
+            "N": 22,
+            "TIPO": "Laptop",
+            "MARCA": "ASUS",
+            "MODELO": "K1703ZA-WH34",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 12985.45,
+            "DESCRIPCION": "El ASUS K1703ZA-WH34 cuenta con un procesador Intel Core i3-1115G4 y pantalla de 15.6 pulgadas. Ofrece rendimiento superior para trabajar, estudiar o disfrutar de entretenimiento. Diseño moderno y sofisticado para cualquier entorno.",
+            "IMG": "ASUS-K1703ZA-WH34.webp"
+        },
+        {
+            "N": 23,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "DY2131WM",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11996.7,
+            "DESCRIPCION": "El HP DY2131WM tiene un procesador Intel Core i3-1115G4 y pantalla de 15.6 pulgadas. Ideal para tareas diarias, trabajo, estudio o entretenimiento. Diseño elegante y moderno para cualquier entorno.",
+            "IMG": "HP-14-DQ2031WM.webp"
+        },
+        {
+            "N": 24,
+            "TIPO": "Laptop",
+            "MARCA": "HP",
+            "MODELO": "15-DW2057CL",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 12655.87,
+            "DESCRIPCION": "El HP 15-DW2057CL cuenta con un procesador Intel Core i5-1035G1 y pantalla de 15.6 pulgadas. Ideal para tareas diarias, trabajo, estudio o entretenimiento. Diseño moderno y elegante para cualquier entorno.",
+            "IMG": "HP-EF2126WM.webp"
+        },
+        {
+            "N": 25,
+            "TIPO": "Laptop",
+            "MARCA": "ACER",
+            "MODELO": "A315-56-596W",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 11667.13,
+            "DESCRIPCION": "El Acer A315-56-596W tiene un procesador Intel Core i5-1035G1 y pantalla de 15.6 pulgadas. Ofrece rendimiento superior para trabajar, estudiar o disfrutar de entretenimiento. Diseño moderno y elegante para cualquier entorno.",
+            "IMG": "ACER-A315-56-596W.webp"
+        },
+        {
+            "ID": 26,
+            "TIPO": "Smartphone",
+            "MARCA": "Realme",
+            "MODELO": "9 Pro+",
+            "COLOR": [
+                "Aurora Green",
+                "Midnight Black"
+            ],
+            "PRECIO": 399.99,
+            "DESCRIPCION": "Cámara de 50MP con carga rápida de 60W",
+            "IMG": "https://placehold.co/350x350/333/FFF/png?text=Realme+9+Pro%2B"
+        },
+        {
+            "ID": 27,
+            "TIPO": "Smartphone",
+            "MARCA": "Motorola",
+            "MODELO": "Moto G82",
+            "COLOR": [
+                "White Lily",
+                "Metallic Gray"
+            ],
+            "PRECIO": 299.99,
+            "DESCRIPCION": "Pantalla OLED y cámara de 50MP",
+            "IMG": "https://placehold.co/350x350/333/FFF/png?text=Moto+G82"
+        },
+        {
+            "ID": 28,
+            "TIPO": "Smartphone",
+            "MARCA": "Nokia",
+            "MODELO": "G60 5G",
+            "COLOR": [
+                "Black",
+                "Ice"
+            ],
+            "PRECIO": 349.99,
+            "DESCRIPCION": "Diseño duradero con 5G integrado",
+            "IMG": "https://placehold.co/350x350/333/FFF/png?text=Nokia+G60+5G"
+        },
+        {
+            "ID": 29,
+            "TIPO": "Smartphone",
+            "MARCA": "Asus",
+            "MODELO": "Zenfone 9",
+            "COLOR": [
+                "Midnight Black",
+                "Star Blue"
+            ],
+            "PRECIO": 699.99,
+            "DESCRIPCION": "Compacto y potente con Snapdragon 8+ Gen 1",
+            "IMG": "https://placehold.co/350x350/333/FFF/png?text=Zenfone+9"
+        },
+        {
+            "ID": 30,
+            "TIPO": "Smartphone",
+            "MARCA": "ZTE",
+            "MODELO": "Blade V40",
+            "COLOR": [
+                "Black",
+                "Blue"
+            ],
+            "PRECIO": 199.99,
+            "DESCRIPCION": "Diseño moderno con triple cámara",
+            "IMG": "https://placehold.co/350x350/333/FFF/png?text=Blade+V40"
+        },
+        {
+            "ID": 31,
+            "TIPO": "Smartphone",
+            "MARCA": "Apple",
+            "MODELO": "iPhone 13",
+            "COLOR": [
+                "Pink",
+                "Blue"
+            ],
+            "PRECIO": 699.99,
+            "DESCRIPCION": "Smartphone con chip A15 Bionic y gran duración de batería",
+            "IMG": "https://placehold.co/350x350/333/FFF/png?text=iPhone+13"
+        },
+        {
+            "ID": 32,
+            "TIPO": "Smartphone",
+            "MARCA": "Samsung",
+            "MODELO": "Galaxy S21 FE",
+            "COLOR": [
+                "Olive",
+                "Lavender"
+            ],
+            "PRECIO": 599.99,
+            "DESCRIPCION": "Edición Fan con pantalla Dynamic AMOLED",
+            "IMG": "https://placehold.co/350x350/333/FFF/png?text=Galaxy+S21+FE"
+        }
+    ]
+}

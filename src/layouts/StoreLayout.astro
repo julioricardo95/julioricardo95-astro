@@ -1,0 +1,287 @@
+---
+const pageTitle = "TechStore - Your Ultimate Tech Store";
+const pageDescription = "Welcome to TechStore, your ultimate destination for the latest tech gadgets and accessories. Find the best deals on electronics, smartphones, and more.";
+const keyword = "store techstore";
+const siteUrl = "https://www.techstore.com";
+const ogImage = `${siteUrl}/images/og-image.jpg`;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Font Awesome para íconos -->
+
+    <!-- Configuración básica -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content={pageDescription}
+    />
+    <meta
+      name="keywords"
+      content="Astro, framework, desarrollo web, SEO, rendimiento, JavaScript, HTML, CSS"
+    />
+    <meta name="author" content="Tu Nombre o Nombre de la Empresa" />
+    <meta name="robots" content="index, follow" />
+    <!-- Para permitir que los motores de búsqueda indexen la página -->
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="/favicon.svg"
+    />
+
+    <!-- URL canónica -->
+    <link rel="canonical" href="https://www.tudominio.com/astro-basics" />
+
+    <!-- Open Graph (para redes sociales) -->
+    <meta
+      property="og:title"
+      content={pageTitle}
+    />
+    <meta
+      property="og:description"
+      content={pageDescription}
+    />
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://www.tudominio.com/astro-basics" />
+    <meta
+      property="og:image"
+      content="https://www.tudominio.com/images/astro-basics.jpg"
+    />
+    <meta property="og:site_name" content={pageTitle}/>
+
+    <!-- Twitter Card (para Twitter) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content={pageTitle}
+    />
+    <meta
+      name="twitter:description"
+      content={pageDescription}
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.tudominio.com/images/astro-basics.jpg"
+    />
+
+    <!-- Precarga de recursos críticos -->
+    <link
+      rel="preload"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      as="style"
+    />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      as="style"
+    />
+
+    <!-- Hojas de estilo -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Título de la página -->
+    <title>{pageTitle}</title>
+
+  </head>
+  
+  <body>
+    <header class="header">
+      <h1 class="header-title">Store</h1>
+    </header>
+
+    <main class="main-content">
+      <slot />
+    </main>
+
+    <style is:global>
+      * {
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+      }
+
+    </style>
+
+    <style>
+      /* Estilos base */
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .main-content {
+        min-height: 100vh;
+        background: #f5f5f5;
+      }
+
+      .header {
+        padding: 2rem;
+        animation:
+          fadeInDown 1s ease-out,
+          colorChange 5s infinite alternate;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header-title {
+        text-align: center;
+        color: #fff;
+        padding: 2rem 0;
+        margin: 0;
+        font-size: 3.5rem;
+        font-weight: 700;
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        position: relative;
+      }
+
+      /* Pseudo-elementos para los íconos */
+      .header-title::before,
+      .header-title::after {
+        content: "\f07a"; /* Código del ícono de Font Awesome (shopping cart) */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        font-size: 2.5rem;
+        color: #fff;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        animation:
+          spin 4s linear infinite,
+          move 3s ease-in-out infinite;
+      }
+
+      .header-title::before {
+        left: 60px; /* Posición a la izquierda del título */
+      }
+
+      .header-title::after {
+        right: 60px; /* Posición a la derecha del título */
+      }
+
+      /* Efecto de partículas */
+      .header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%23ffffff" opacity="0.5"/><circle cx="50" cy="50" r="3" fill="%23ff9a9e" opacity="0.7"/><circle cx="80" cy="80" r="1.5" fill="%236dd5ed" opacity="0.6"/><circle cx="10" cy="90" r="2.5" fill="%239a8cff" opacity="0.8"/><circle cx="90" cy="10" r="2" fill="%23ffffff" opacity="0.5"/></svg>');
+        animation: particles 25s linear infinite;
+        z-index: 1;
+      }
+
+      /* Animaciones */
+      @keyframes fadeInDown {
+        0% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes colorChange {
+        0% {
+          background: linear-gradient(90deg, #6dd5ed, #9a8cff);
+        }
+        50% {
+          background: linear-gradient(90deg, #9a8cff, #ff9a9e);
+        }
+        100% {
+          background: linear-gradient(90deg, #6dd5ed, #9a8cff);
+        }
+      }
+
+      @keyframes glow {
+        0% {
+          text-shadow:
+            0 0 10px #fff,
+            0 0 20px #fff,
+            0 0 30px #6dd5ed,
+            0 0 40px #6dd5ed,
+            0 0 50px #6dd5ed,
+            0 0 60px #6dd5ed,
+            0 0 70px #6dd5ed;
+        }
+        100% {
+          text-shadow:
+            0 0 20px #fff,
+            0 0 30px #9a8cff,
+            0 0 40px #9a8cff,
+            0 0 50px #9a8cff,
+            0 0 60px #9a8cff,
+            0 0 70px #9a8cff,
+            0 0 80px #9a8cff;
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: translateY(-50%) rotate(0deg);
+        }
+        100% {
+          transform: translateY(-50%) rotate(360deg);
+        }
+      }
+
+      @keyframes move {
+        0% {
+          transform: translateY(-50%) translateX(0);
+        }
+        50% {
+          transform: translateY(-50%) translateX(10px);
+        }
+        100% {
+          transform: translateY(-50%) translateX(0);
+        }
+      }
+
+      @keyframes particles {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-100%);
+        }
+      }
+
+      @media (max-width: 500px) {
+        .header-title::before,
+        .header-title::after {
+          top: 120px; /* Posición a la izquierda del título */
+        }
+      }
+    </style>
+  </body>
+</html>
