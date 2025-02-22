@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="gps-container">
+      <div id="connection-status" class="connection-status hidden">
+        <span class="status-text"></span>
+      </div>
+
+      <div class="coordinates-panel">
+        <h2>Coordenadas GPS</h2>
+        <div class="coordinates">
+          <div class="coordinate-item">
+            <span>Latitud:</span>
+            <span id="latitude">--</span>
+          </div>
+          <div class="coordinate-item">
+            <span>Longitud:</span>
+            <span id="longitude">--</span>
+          </div>
+          <div class="coordinate-item">
+            <span>Elevación:</span>
+            <span id="elevation">--</span>
+          </div>
+          <div class="coordinate-item">
+            <span>Precisión:</span>
+            <span id="accuracy">--</span>
+          </div>
+        </div>
+        <div class="signal-indicator">
+          <span>Señal GPS:</span>
+          <div id="signal-strength"></div>
+        </div>
+      </div>
+
+      <div class="tracking-panel">
+        <div class="buttons">
+          <button id="start-tracking" class="primary-button"
+            >Iniciar Rastreo</button
+          >
+          <button id="save-point" class="secondary-button">Guardar Punto</button
+          >
+        </div>
+        <div class="track-info">
+          <div>Distancia: <span id="distance">0.00</span> km</div>
+          <div>Tiempo: <span id="duration">00:00:00</span></div>
+        </div>
+      </div>
+
+      <!-- Nuevo panel para agregar puntos manualmente -->
+      <div class="manual-point-panel">
+        <h3>Agregar Punto Manual</h3>
+        <div class="manual-point-form">
+          <div class="form-group">
+            <label for="manual-lat">Latitud:</label>
+            <input
+              type="number"
+              id="manual-lat"
+              step="0.000001"
+              placeholder="Ej: -33.447487"
+            />
+            <span id="longitude">--</span>
+          </div>
+          <div class="form-group">
+            <label for="manual-lng">Longitud:</label>
+            <input
+              type="number"
+              id="manual-lng"
+              step="0.000001"
+              placeholder="Ej: -70.673676"
+            />
+            <span id="longitude">--</span>
+          </div>
+          <div class="form-group">
+            <label for="manual-elevation">Elevación (m):</label>
+            <input
+              type="number"
+              id="manual-elevation"
+              step="0.1"
+              placeholder="Opcional"
+            />
+          </div>
+          <div class="form-group">
+            <label for="manual-label">Etiqueta:</label>
+            <input
+              type="text"
+              id="manual-label"
+              placeholder="Nombre del punto"
+            />
+          </div>
+          <button id="add-manual-point" class="primary-button"
+            >Agregar Punto</button
+          >
+        </div>
+      </div>
+
+      <div class="points-panel">
+        <h3>Puntos Guardados</h3>
+        <div id="points-list" class="points-list"></div>
+      </div>
+
+      <div class="export-panel">
+        <select id="export-format">
+          <option value="txt">TXT</option>
+          <option value="gpx">GPX</option>
+          <option value="json">JSON</option>
+        </select>
+        <button id="export-button" class="primary-button">Exportar</button>
+      </div>
+
+      <div class="search-panel">
+        <input
+          type="text"
+          id="coordinates-search"
+          placeholder="Buscar coordenadas (lat, long)"
+        />
+        <button id="search-button" class="secondary-button">Buscar</button>
+      </div>
+    </div>
+
+    <script>
+      class GPSSystem {
+        elements: any;
+        tracking: boolean;
+        points: any[];
+        currentTrack: any[];
+        startTime: Date | null;
+        watchId: number | null;
+        trackingInterval: number | null;
+
+        constructor() {
+          this.tracking = false;
+          this.points = [];
+          this.currentTrack = [];
+          this.startTime = null;
+          this.watchId = null;
+          this.trackingInterval = null;
+
+          this.initializeElements();
+          this.setupEventListeners();
+          this.startGPSUpdates();
+          this.registerServiceWorker();
+          this.setupOnlineStatusHandling();
+          this.loadSavedPoints();
+        }
+
+        // Inicialización del sistema
+        initializeElements() {
+          this.elements = {
+            latitude: document.getElementById("latitude"),
+            longitude: document.getElementById("longitude"),
+            elevation: document.getElementById("elevation"),
+            accuracy: document.getElementById("accuracy"),
+            signalStrength: document.getElementById("signal-strength"),
+            startTracking: document.getElementById("start-tracking"),
+            savePoint: document.getElementById("save-point"),
+            distance: document.getElementById("distance"),
+            duration: document.getElementById("duration"),
+            pointsList: document.getElementById("points-list"),
+            exportFormat: document.getElementById("export-format"),
+            exportButton: document.getElementById("export-button"),
+            searchInput: document.getElementById("coordinates-search"),
+            searchButton: document.getElementById("search-button"),
+            manualLat: document.getElementById("manual-lat"),
+            manualLng: document.getElementById("manual-lng"),
+            manualElevation: document.getElementById("manual-elevation"),
+            manualLabel: document.getElementById("manual-label"),
+            addManualPoint: document.getElementById("add-manual-point"),
+          };
+        }
+
+        setupEventListeners() {
+          this.elements.startTracking.addEventListener("click", () =>
+            this.toggleTracking()
+          );
+          this.elements.savePoint.addEventListener("click", () =>
+            this.saveCurrentPoint()
+          );
+          this.elements.exportButton.addEventListener("click", () =>
+            this.exportData()
+          );
+          this.elements.searchButton.addEventListener("click", () =>
+            this.searchCoordinates()
+          );
+          this.elements.addManualPoint.addEventListener("click", () =>
+            this.addManualPoint()
+          );
+        }
+
+        // Funciones relacionadas con el GPS
+        startGPSUpdates() {
+          if ("geolocation" in navigator) {
+            this.watchId = navigator.geolocation.watchPosition(
+              (position) => this.updatePosition(position),
+              (error) => this.handleError(error),
+              { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+            );
+          } else {
+            this.handleError({ message: "Geolocalización no disponible" });
+          }
+        }
+
+        updatePosition(position: GeolocationPosition) {
+          const { latitude, longitude, altitude, accuracy } = position.coords;
+          this.updateCoordinatesDisplay(
+            latitude,
+            longitude,
+            altitude,
+            accuracy
+          );
+          this.updateSignalStrength(accuracy);
+        }
+
+        updateCoordinatesDisplay(
+          lat: number,
+          lng: number,
+          alt: number | null,
+          acc: number
+        ) {
+          this.elements.latitude.textContent = lat.toFixed(6);
+          this.elements.longitude.textContent = lng.toFixed(6);
+          this.elements.elevation.textContent = alt
+            ? `${alt.toFixed(1)}m`
+            : "N/A";
+          this.elements.accuracy.textContent = `${acc.toFixed(1)}m`;
+        }
+
+        updateSignalStrength(accuracy: number) {
+          let strength = "weak";
+          if (accuracy <= 5) strength = "excellent";
+          else if (accuracy <= 10) strength = "good";
+          else if (accuracy <= 20) strength = "moderate";
+          this.elements.signalStrength.className = `signal-${strength}`;
+        }
+
+        // Funciones de rastreo
+        toggleTracking() {
+          this.tracking = !this.tracking;
+          if (this.tracking) {
+            this.startTracking();
+          } else {
+            this.stopTracking();
+          }
+        }
+
+        startTracking() {
+          this.startTime = new Date();
+          this.currentTrack = [];
+          this.elements.startTracking.textContent = "Detener Rastreo";
+          this.elements.startTracking.classList.add("active");
+          this.trackingInterval = setInterval(() => this.updateTrack(), 10000);
+        }
+
+        stopTracking() {
+          this.elements.startTracking.textContent = "Iniciar Rastreo";
+          this.elements.startTracking.classList.remove("active");
+          if (this.trackingInterval) {
+            clearInterval(this.trackingInterval);
+            this.trackingInterval = null;
+          }
+        }
+
+        updateTrack() {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const point = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              time: new Date(),
+            };
+            this.currentTrack.push(point);
+            this.updateTrackInfo();
+          });
+        }
+
+        updateTrackInfo() {
+          if (!this.tracking || this.currentTrack.length < 2) return;
+
+          const distance = this.calculateTotalDistance(this.currentTrack);
+          const duration = new Date() - this.startTime;
+
+          this.elements.distance.textContent = distance.toFixed(2);
+          this.elements.duration.textContent = this.formatDuration(duration);
+        }
+
+        calculateTotalDistance(track) {
+          let totalDistance = 0;
+          for (let i = 1; i < track.length; i++) {
+            totalDistance += this.calculateDistance(track[i - 1], track[i]);
+          }
+          return totalDistance;
+        }
+
+        calculateDistance(p1, p2) {
+          const R = 6371;
+          const dLat = this.toRad(p2.lat - p1.lat);
+          const dLon = this.toRad(p2.lng - p1.lng);
+          const lat1 = this.toRad(p1.lat);
+          const lat2 = this.toRad(p2.lat);
+
+          const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) *
+              Math.sin(dLon / 2) *
+              Math.cos(lat1) *
+              Math.cos(lat2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          return R * c;
+        }
+
+        toRad(degrees) {
+          return (degrees * Math.PI) / 180;
+        }
+
+        formatDuration(ms) {
+          const seconds = Math.floor((ms / 1000) % 60);
+          const minutes = Math.floor((ms / (1000 * 60)) % 60);
+          const hours = Math.floor(ms / (1000 * 60 * 60));
+
+          return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        }
+
+        // Funciones de puntos
+        addManualPoint() {
+          const lat = parseFloat(this.elements.manualLat.value);
+          const lng = parseFloat(this.elements.manualLng.value);
+          const elevation =
+            parseFloat(this.elements.manualElevation.value) || null;
+          const label =
+            this.elements.manualLabel.value.trim() ||
+            `Punto ${this.points.length + 1}`;
+
+          if (!this.validateCoordinates(lat, lng)) {
+            alert(
+              "Coordenadas inválidas. Latitud debe estar entre -90 y 90, y longitud entre -180 y 180."
+            );
+            return;
+          }
+
+          const point = this.createPoint(lat, lng, elevation, label);
+          this.savePoint(point);
+          this.clearManualPointForm();
+        }
+
+        validateCoordinates(lat, lng) {
+          return (
+            !isNaN(lat) &&
+            !isNaN(lng) &&
+            lat >= -90 &&
+            lat <= 90 &&
+            lng >= -180 &&
+            lng <= 180
+          );
+        }
+
+        createPoint(lat, lng, elevation, label) {
+          return {
+            id: Date.now(),
+            lat,
+            lng,
+            elevation,
+            timestamp: new Date(),
+            label,
+          };
+        }
+
+        saveCurrentPoint() {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const point = this.createPoint(
+              position.coords.latitude,
+              position.coords.longitude,
+              position.coords.altitude,
+              `Punto ${this.points.length + 1}`
+            );
+            this.savePoint(point);
+          });
+        }
+
+        savePoint(point) {
+          this.points.push(point);
+          this.updatePointsList();
+          localStorage.setItem("savedPoints", JSON.stringify(this.points));
+        }
+
+        updatePointsList() {
+          this.elements.pointsList.innerHTML = this.points
+            .map((point) => this.createPointListItem(point))
+            .join("");
+        }
+
+        createPointListItem(point) {
+          return `
+          <div class="point-item" data-id="${point.id}">
+            <div class="point-info">
+              <strong>${point.label}</strong>
+              <div>Lat: ${point.lat.toFixed(6)}, Lng: ${point.lng.toFixed(6)}</div>
+              <div>Elevación: ${point.elevation ? point.elevation.toFixed(1) + "m" : "N/A"}</div>
+              <div>${point.timestamp.toLocaleString()}</div>
+            </div>
+            <div class="point-actions">
+              <button onclick="gpsSystem.editPoint(${point.id})">Editar</button>
+              <button onclick="gpsSystem.deletePoint(${point.id})">Eliminar</button>
+            </div>
+          </div>
+        `;
+        }
+
+        clearManualPointForm() {
+          this.elements.manualLat.value = "";
+          this.elements.manualLng.value = "";
+          this.elements.manualElevation.value = "";
+          this.elements.manualLabel.value = "";
+        }
+
+        editPoint(id) {
+          const point = this.points.find((p) => p.id === id);
+          if (!point) return;
+
+          const newLabel = prompt("Ingrese nueva etiqueta:", point.label);
+          if (newLabel !== null) {
+            point.label = newLabel;
+            this.updatePointsList();
+            localStorage.setItem("savedPoints", JSON.stringify(this.points));
+          }
+        }
+
+        deletePoint(id) {
+          if (confirm("¿Está seguro de eliminar este punto?")) {
+            this.points = this.points.filter((p) => p.id !== id);
+            this.updatePointsList();
+            localStorage.setItem("savedPoints", JSON.stringify(this.points));
+          }
+        }
+
+        // Funciones de exportación
+        exportData() {
+          const format = this.elements.exportFormat.value;
+          const content = this.getExportContent(format);
+          const filename = `gps-data-${new Date().toISOString().split("T")[0]}.${format}`;
+
+          this.downloadFile(content, filename);
+        }
+
+        getExportContent(format) {
+          switch (format) {
+            case "txt":
+              return this.exportAsTXT();
+            case "gpx":
+              return this.exportAsGPX();
+            case "json":
+              return this.exportAsJSON();
+            default:
+              return "";
+          }
+        }
+
+        exportAsTXT() {
+          return this.points
+            .map(
+              (point) =>
+                `${point.label}\nLatitud: ${point.lat}\nLongitud: ${point.lng}\nElevación: ${point.elevation || "N/A"}\nFecha: ${point.timestamp.toLocaleString()}\n---`
+            )
+            .join("\n");
+        }
+
+        exportAsGPX() {
+          return `<?xml version="1.0" encoding="UTF-8"?>
+    <gpx version="1.1" creator="GPS System">
+      <metadata>
+        <time>${new Date().toISOString()}</time>
+      </metadata>
+      ${this.points
+        .map(
+          (point) => `
+      <wpt lat="${point.lat}" lon="${point.lng}">
+        <ele>${point.elevation || 0}</ele>
+        <time>${point.timestamp.toISOString()}</time>
+        <name>${point.label}</name>
+      </wpt>`
+        )
+        .join("")}
+    </gpx>`;
+        }
+
+        exportAsJSON() {
+          return JSON.stringify(this.points, null, 2);
+        }
+
+        downloadFile(content, filename) {
+          const blob = new Blob([content], { type: "text/plain" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+
+        // Funciones de búsqueda
+        searchCoordinates() {
+          const input = this.elements.searchInput.value;
+          const coords = input
+            .split(",")
+            .map((coord) => parseFloat(coord.trim()));
+
+          if (!this.validateSearchInput(coords)) {
+            alert("Formato inválido. Use: latitud, longitud");
+            return;
+          }
+
+          const [lat, lng] = coords;
+          console.log(`Buscando coordenadas: ${lat}, ${lng}`);
+        }
+
+        validateSearchInput(coords) {
+          return (
+            coords.length === 2 &&
+            !isNaN(coords[0]) &&
+            !isNaN(coords[1]) &&
+            coords[0] >= -90 &&
+            coords[0] <= 90 &&
+            coords[1] >= -180 &&
+            coords[1] <= 180
+          );
+        }
+
+        // Funciones de manejo de errores
+        handleError(error) {
+          console.error("Error GPS:", error);
+          this.elements.latitude.textContent = "Error";
+          this.elements.longitude.textContent = "Error";
+          this.elements.elevation.textContent = "Error";
+          this.elements.accuracy.textContent = "Error";
+          this.elements.signalStrength.className = "signal-error";
+        }
+
+        // Funciones de persistencia
+        loadSavedPoints() {
+          const savedPoints = localStorage.getItem("savedPoints");
+          if (savedPoints) {
+            this.points = JSON.parse(savedPoints).map((point) => ({
+              ...point,
+              timestamp: new Date(point.timestamp),
+            }));
+            this.updatePointsList();
+          }
+        }
+
+        // Funciones de Service Worker
+        async registerServiceWorker() {
+          if ("serviceWorker" in navigator) {
+            try {
+              const registration =
+                await navigator.serviceWorker.register("/sw.js");
+              console.log(
+                "Service Worker registered with scope:",
+                registration.scope
+              );
+            } catch (error) {
+              console.error("Service Worker registration failed:", error);
+            }
+          }
+        }
+
+        setupOnlineStatusHandling() {
+          const connectionStatus = document.getElementById("connection-status");
+          const statusText = connectionStatus.querySelector(".status-text");
+
+          const updateOnlineStatus = (online) => {
+            connectionStatus.classList.remove("hidden");
+            if (online) {
+              connectionStatus.classList.remove("offline");
+              connectionStatus.classList.add("online");
+              statusText.textContent = "Conexión restaurada";
+              setTimeout(() => connectionStatus.classList.add("hidden"), 3000);
+            } else {
+              connectionStatus.classList.remove("online");
+              connectionStatus.classList.add("offline");
+              statusText.textContent = "Sin conexión - Modo offline";
+            }
+
+            if (navigator.serviceWorker.controller) {
+              navigator.serviceWorker.controller.postMessage({
+                type: "ONLINE_STATUS_CHANGE",
+                online,
+              });
+            }
+          };
+
+          window.addEventListener("online", () => updateOnlineStatus(true));
+          window.addEventListener("offline", () => updateOnlineStatus(false));
+          updateOnlineStatus(navigator.onLine);
+
+          navigator.serviceWorker.addEventListener("message", (event) => {
+            if (event.data && event.data.type === "ONLINE_STATUS_UPDATE") {
+              updateOnlineStatus(event.data.online);
+            }
+          });
+        }
+      }
+
+      // Inicializar el sistema GPS
+      window.gpsSystem = new GPSSystem();
+    </script>
+
+    <style>
+      .gps-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+
+      .connection-status {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        text-align: center;
+        z-index: 1000;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      .connection-status.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .connection-status.online {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .connection-status.offline {
+        background-color: #f44336;
+        color: white;
+      }
+
+      .coordinates-panel {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .coordinates {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+
+      .coordinate-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: #f5f5f5;
+        border-radius: 4px;
+      }
+
+      .signal-indicator {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #signal-strength {
+        width: 60px;
+        height: 20px;
+        border-radius: 10px;
+      }
+
+      .signal-excellent {
+        background: #4caf50;
+      }
+      .signal-good {
+        background: #8bc34a;
+      }
+      .signal-moderate {
+        background: #ffc107;
+      }
+      .signal-weak {
+        background: #ff5722;
+      }
+      .signal-error {
+        background: #f44336;
+      }
+
+      .tracking-panel {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .manual-point-panel {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .manual-point-form {
+        display: grid;
+        gap: 15px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .form-group label {
+        font-weight: bold;
+        color: #333;
+      }
+
+      .form-group input {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .primary-button,
+      .secondary-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+
+      .primary-button {
+        background: #2196f3;
+        color: white;
+      }
+
+      .primary-button:hover {
+        background: #1976d2;
+      }
+
+      .primary-button.active {
+        background: #f44336;
+      }
+
+      .secondary-button {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .secondary-button:hover {
+        background: #bdbdbd;
+      }
+
+      .track-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.1em;
+      }
+
+      .points-panel {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .points-list {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .point-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .point-actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .point-actions button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background: #e0e0e0;
+      }
+
+      .export-panel {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .export-panel select {
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+
+      .search-panel {
+        display: flex;
+        gap: 10px;
+      }
+
+      .search-panel input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+
+      @media (max-width: 600px) {
+        .coordinates {
+          grid-template-columns: 1fr;
+        }
+
+        .buttons {
+          flex-direction: column;
+        }
+
+        .track-info {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .point-item {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .export-panel,
+        .search-panel {
+          flex-direction: column;
+        }
+
+        .manual-point-form {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </body>
+</html>
