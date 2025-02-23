@@ -1,4 +1,5 @@
 ---
+import WhasappBottom from "../component/whasapp_bottom.astro";
 const pageTitle = "TechStore - Your Ultimate Tech Store";
 const pageDescription = "Welcome to TechStore, your ultimate destination for the latest tech gadgets and accessories. Find the best deals on electronics, smartphones, and more.";
 const keyword = "store techstore";
@@ -101,6 +102,8 @@ const ogImage = `${siteUrl}/images/og-image.jpg`;
     <header class="header">
       <h1 class="header-title">Store</h1>
     </header>
+
+    <WhasappBottom/>
 
     <main class="main-content">
       <slot />
