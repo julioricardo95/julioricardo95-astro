@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import { Map as MapIcon, Layers, Navigation, Save, List, Download, Menu, X, Search, Copy, RotateCcw, Compass, Zap } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import './gpsGarminReact.css';
 
+//
 // Type definitions
 interface SavedPoint {
   id: string;
@@ -933,7 +935,7 @@ function App() {
   );
 
   return (
-    <div className="h-screen flex flex-col bg-black text-green-500 font-mono relative">
+    <div className="h-screen flex flex-col bg-black text-green-500 font-mono relative container">
       {/* Mobile Menu Button */}
       <button
         onClick={() => setShowMenu(!showMenu)}
@@ -945,7 +947,7 @@ function App() {
       {/* Search Button */}
       <button
         onClick={() => setShowSearch(!showSearch)}
-        className="absolute top-4 right-4 z-20 bg-black bg-opacity-90 p-2 rounded-full border border-green-500"
+        className="searchButton"
       >
         <Search className="w-6 h-6" />
       </button>

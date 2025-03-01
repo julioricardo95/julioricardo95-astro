@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="gps-container">
+      <div id="connection-status" class="connection-status hidden">
+        <span class="status-text"></span>
+      </div>
+
+      <div class="coordinates-panel">
+        <h2>Coordenadas GPS</h2>
+        <div class="coordinates">
+          <div class="coordinate-item">
+            <span>Latitud:</span>
+            <span id="latitude">--</span>
+          </div>
+          <div class="coordinate-item">
+            <span>Longitud:</span>
+            <span id="longitude">--</span>
+          </div>
+          <div class="coordinate-item">
+            <span>Elevación:</span>
+            <span id="elevation">--</span>
+          </div>
+          <div class="coordinate-item">
+            <span>Precisión:</span>
+            <span id="accuracy">--</span>
+          </div>
+          <div class="coordinate-item">
+            <span>UTM Este:</span>
+            <span id="utm-easting">--</span>
+          </div>
+          <div class="coordinate-item">
+            <span>UTM Norte:</span>
+            <span id="utm-northing">--</span>
+          </div>
+        </div>
+        <div class="signal-indicator">
+          <span>Señal GPS:</span>
+          <div id="signal-strength"></div>
+        </div>
+      </div>
+
+      <div class="tracking-panel">
+        <div class="buttons">
+          <button id="start-tracking" class="primary-button"
+            >Iniciar Rastreo</button
+          >
+          <button id="save-point" class="secondary-button">Guardar Punto</button
+          >
+        </div>
+        <div class="track-info">
+          <div>Distancia: <span id="distance">0.00</span> km</div>
+          <div>Tiempo: <span id="duration">00:00:00</span></div>
+        </div>
+      </div>
+
+      <div class="points-panel">
+        <h3>Puntos Guardados</h3>
+        <div id="points-list" class="points-list"></div>
+      </div>
+
+      <div class="export-panel">
+        <select id="export-format">
+          <option value="txt">TXT</option>
+          <option value="gpx">GPX</option>
+          <option value="json">JSON</option>
+        </select>
+        <button id="export-button" class="primary-button">Exportar</button>
+      </div>
+
+      <div class="search-panel">
+        <input
+          type="text"
+          id="coordinates-search"
+          placeholder="Buscar coordenadas (lat, long)"
+        />
+        <button id="search-button" class="secondary-button">Buscar</button>
+      </div>
+    </div>
+
+    <script>
+      class GPSSystem {
+        constructor() {
+          this.tracking = false;
+          this.points = [];
+          this.currentTrack = [];
+          this.startTime = null;
+          this.watchId = null;
+          this.trackingInterval = null;
+
+          this.initializeElements();
+          this.setupEventListeners();
+          this.startGPSUpdates();
+          this.registerServiceWorker();
+          this.setupOnlineStatusHandling();
+
+          const savedPoints = localStorage.getItem("savedPoints");
+          if (savedPoints) {
+            this.points = JSON.parse(savedPoints).map((point) => ({
+              ...point,
+              timestamp: new Date(point.timestamp),
+            }));
+            this.updatePointsList();
+          }
+        }
+
+        geographicToUTM(lat, lon, zone, hemisphere) {
+          // Validación de entradas
+          if (
+            typeof lat !== "number" ||
+            typeof lon !== "number" ||
+            isNaN(lat) ||
+            isNaN(lon)
+          ) {
+            throw new Error("Latitud y longitud deben ser números válidos.");
+          }
+          if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+            throw new Error(
+              "Latitud debe estar entre -90 y 90, y longitud entre -180 y 180."
+            );
+          }
+          if (
+            !/^\d{1,2}$/.test(zone) ||
+            parseInt(zone) < 1 ||
+            parseInt(zone) > 60
+          ) {
+            throw new Error("La zona UTM debe ser un número entre 1 y 60.");
+          }
+          if (!["N", "S"].includes(hemisphere)) {
+            throw new Error('El hemisferio debe ser "N" (norte) o "S" (sur).');
+          }
+
+          // Constantes UTM
+          const EQUATORIAL_RADIUS = 6378137.0; // Radio ecuatorial en metros
+          const ECCENTRICITY_SQUARED = 0.00669438; // Cuadrado de la excentricidad
+          const SCALE_FACTOR = 0.9996; // Factor de escala
+          const FALSE_EASTING = 500000.0; // Falso este en metros
+
+          // Convertir latitud y longitud a radianes
+          const latRad = (lat * Math.PI) / 180;
+          const lonRad = (lon * Math.PI) / 180;
+
+          // Calcular el meridiano central de la zona UTM
+          const centralMeridian = ((-183 + parseInt(zone) * 6) * Math.PI) / 180;
+
+          // Calcular el falso northing según el hemisferio
+          const falseNorthing = hemisphere === "S" ? 10000000 : 0;
+
+          // Calcular N (radio de curvatura en el primer vertical)
+          const sinLat = Math.sin(latRad);
+          const N =
+            EQUATORIAL_RADIUS /
+            Math.sqrt(1 - ECCENTRICITY_SQUARED * sinLat ** 2);
+
+          // Calcular T (tangente al cuadrado de la latitud)
+          const T = Math.tan(latRad) ** 2;
+
+          // Calcular C (coeficiente de corrección)
+          const cosLat = Math.cos(latRad);
+          const C =
+            (ECCENTRICITY_SQUARED * cosLat ** 2) / (1 - ECCENTRICITY_SQUARED);
+
+          // Calcular A (diferencia de longitud respecto al meridiano central)
+          const A = cosLat * (lonRad - centralMeridian);
+
+          // Calcular M (distancia meridional)
+          const e2 = ECCENTRICITY_SQUARED;
+          const M =
+            EQUATORIAL_RADIUS *
+            ((1 - e2 / 4 - (3 * e2 ** 2) / 64) * latRad -
+              ((3 * e2) / 8 + (3 * e2 ** 2) / 32) * Math.sin(2 * latRad) +
+              ((15 * e2 ** 2) / 256) * Math.sin(4 * latRad));
+
+          // Calcular el este (easting)
+          const A2 = A ** 2;
+          const A3 = A ** 3;
+          const A5 = A ** 5;
+          const easting =
+            FALSE_EASTING +
+            SCALE_FACTOR *
+              N *
+              (A +
+                ((1 - T + C) * A3) / 6 +
+                ((5 - 18 * T + T ** 2 + 72 * C - 58) * A5) / 120);
+
+          // Calcular el norte (northing)
+          const A4 = A ** 4;
+          const A6 = A ** 6;
+          const northing =
+            falseNorthing +
+            SCALE_FACTOR *
+              (M +
+                N *
+                  Math.tan(latRad) *
+                  (A2 / 2 +
+                    ((5 - T + 9 * C + 4 * C ** 2) * A4) / 24 +
+                    ((61 - 58 * T + T ** 2 + 600 * C - 330) * A6) / 720));
+
+          return { easting, northing };
+        }
+
+        async registerServiceWorker() {
+          if ("serviceWorker" in navigator) {
+            try {
+              const registration =
+                await navigator.serviceWorker.register("/sw.js");
+              console.log(
+                "Service Worker registered with scope:",
+                registration.scope
+              );
+            } catch (error) {
+              console.error("Service Worker registration failed:", error);
+            }
+          }
+        }
+
+        setupOnlineStatusHandling() {
+          const connectionStatus = document.getElementById("connection-status");
+          const statusText = connectionStatus.querySelector(".status-text");
+
+          const updateOnlineStatus = (online) => {
+            connectionStatus.classList.remove("hidden");
+            if (online) {
+              connectionStatus.classList.remove("offline");
+              connectionStatus.classList.add("online");
+              statusText.textContent = "Conexión restaurada";
+              setTimeout(() => connectionStatus.classList.add("hidden"), 3000);
+            } else {
+              connectionStatus.classList.remove("online");
+              connectionStatus.classList.add("offline");
+              statusText.textContent = "Sin conexión - Modo offline";
+            }
+
+            if (navigator.serviceWorker.controller) {
+              navigator.serviceWorker.controller.postMessage({
+                type: "ONLINE_STATUS_CHANGE",
+                online,
+              });
+            }
+          };
+
+          window.addEventListener("online", () => updateOnlineStatus(true));
+          window.addEventListener("offline", () => updateOnlineStatus(false));
+          updateOnlineStatus(navigator.onLine);
+
+          navigator.serviceWorker.addEventListener("message", (event) => {
+            if (event.data && event.data.type === "ONLINE_STATUS_UPDATE") {
+              updateOnlineStatus(event.data.online);
+            }
+          });
+        }
+
+        initializeElements() {
+          this.elements = {
+            latitude: document.getElementById("latitude"),
+            longitude: document.getElementById("longitude"),
+            elevation: document.getElementById("elevation"),
+            accuracy: document.getElementById("accuracy"),
+            signalStrength: document.getElementById("signal-strength"),
+            startTracking: document.getElementById("start-tracking"),
+            savePoint: document.getElementById("save-point"),
+            distance: document.getElementById("distance"),
+            duration: document.getElementById("duration"),
+            pointsList: document.getElementById("points-list"),
+            exportFormat: document.getElementById("export-format"),
+            exportButton: document.getElementById("export-button"),
+            searchInput: document.getElementById("coordinates-search"),
+            searchButton: document.getElementById("search-button"),
+            utmEasting: document.getElementById("utm-easting"),
+            utmNorthing: document.getElementById("utm-northing"),
+          };
+        }
+
+        setupEventListeners() {
+          this.elements.startTracking.addEventListener("click", () =>
+            this.toggleTracking()
+          );
+          this.elements.savePoint.addEventListener("click", () =>
+            this.saveCurrentPoint()
+          );
+          this.elements.exportButton.addEventListener("click", () =>
+            this.exportData()
+          );
+          this.elements.searchButton.addEventListener("click", () =>
+            this.searchCoordinates()
+          );
+        }
+
+        startGPSUpdates() {
+          if ("geolocation" in navigator) {
+            this.watchId = navigator.geolocation.watchPosition(
+              (position) => this.updatePosition(position),
+              (error) => this.handleError(error),
+              {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0,
+              }
+            );
+          } else {
+            this.handleError({ message: "Geolocalización no disponible" });
+          }
+        }
+
+        updatePosition(position) {
+          const { latitude, longitude, altitude, accuracy } = position.coords;
+
+          this.elements.latitude.textContent = latitude.toFixed(6);
+          this.elements.longitude.textContent = longitude.toFixed(6);
+          this.elements.elevation.textContent = altitude
+            ? `${altitude.toFixed(1)}m`
+            : "N/A";
+          this.elements.accuracy.textContent = `${accuracy.toFixed(1)}m`;
+
+          // Calcular y mostrar coordenadas UTM
+          try {
+            const zone = Math.floor((longitude + 180) / 6) + 1;
+            const hemisphere = latitude >= 0 ? "N" : "S";
+            const utm = this.geographicToUTM(
+              latitude,
+              longitude,
+              zone.toString(),
+              hemisphere
+            );
+
+            this.elements.utmEasting.textContent = `${utm.easting.toFixed(4)}m E`;
+            this.elements.utmNorthing.textContent = `${utm.northing.toFixed(4)}m N`;
+          } catch (error) {
+            console.error("Error al calcular UTM:", error);
+            this.elements.utmEasting.textContent = "Error";
+            this.elements.utmNorthing.textContent = "Error";
+          }
+
+          this.updateSignalStrength(accuracy);
+        }
+
+        updateSignalStrength(accuracy) {
+          let strength = "weak";
+          if (accuracy <= 5) strength = "excellent";
+          else if (accuracy <= 10) strength = "good";
+          else if (accuracy <= 20) strength = "moderate";
+
+          this.elements.signalStrength.className = `signal-${strength}`;
+        }
+
+        toggleTracking() {
+          this.tracking = !this.tracking;
+
+          if (this.tracking) {
+            this.startTime = new Date();
+            this.currentTrack = [];
+            this.elements.startTracking.textContent = "Detener Rastreo";
+            this.elements.startTracking.classList.add("active");
+
+            this.trackingInterval = setInterval(() => {
+              navigator.geolocation.getCurrentPosition((position) => {
+                this.updateTrack(position);
+              });
+            }, 10000);
+          } else {
+            this.elements.startTracking.textContent = "Iniciar Rastreo";
+            this.elements.startTracking.classList.remove("active");
+            if (this.trackingInterval) {
+              clearInterval(this.trackingInterval);
+              this.trackingInterval = null;
+            }
+          }
+        }
+
+        updateTrack(position) {
+          const point = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            time: new Date(),
+          };
+
+          this.currentTrack.push(point);
+          this.updateTrackInfo();
+        }
+
+        updateTrackInfo() {
+          if (!this.tracking || this.currentTrack.length < 2) return;
+
+          let distance = 0;
+          for (let i = 1; i < this.currentTrack.length; i++) {
+            const p1 = this.currentTrack[i - 1];
+            const p2 = this.currentTrack[i];
+            distance += this.calculateDistance(p1, p2);
+          }
+
+          const duration = new Date() - this.startTime;
+
+          this.elements.distance.textContent = distance.toFixed(2);
+          this.elements.duration.textContent = this.formatDuration(duration);
+        }
+
+        calculateDistance(p1, p2) {
+          const R = 6371;
+          const dLat = this.toRad(p2.lat - p1.lat);
+          const dLon = this.toRad(p2.lng - p1.lng);
+          const lat1 = this.toRad(p1.lat);
+          const lat2 = this.toRad(p2.lat);
+
+          const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.sin(dLon / 2) *
+              Math.sin(dLon / 2) *
+              Math.cos(lat1) *
+              Math.cos(lat2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          return R * c;
+        }
+
+        toRad(degrees) {
+          return (degrees * Math.PI) / 180;
+        }
+
+        formatDuration(ms) {
+          const seconds = Math.floor((ms / 1000) % 60);
+          const minutes = Math.floor((ms / (1000 * 60)) % 60);
+          const hours = Math.floor(ms / (1000 * 60 * 60));
+
+          return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        }
+
+        saveCurrentPoint() {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const point = {
+              id: Date.now(),
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              elevation: position.coords.altitude,
+              timestamp: new Date(),
+              label: `Punto ${this.points.length + 1}`,
+            };
+
+            this.points.push(point);
+            this.updatePointsList();
+            localStorage.setItem("savedPoints", JSON.stringify(this.points));
+          });
+        }
+
+        updatePointsList() {
+          this.elements.pointsList.innerHTML = this.points
+            .map(
+              (point) => `
+        <div class="point-item" data-id="${point.id}">
+          <div class="point-info">
+            <strong>${point.label}</strong>
+            <div>Lat: ${point.lat.toFixed(6)}, Lng: ${point.lng.toFixed(6)}</div>
+            <div>Elevación: ${point.elevation ? point.elevation.toFixed(1) + "m" : "N/A"}</div>
+            <div>${point.timestamp.toLocaleString()}</div>
+          </div>
+          <div class="point-actions">
+            <button onclick="gpsSystem.editPoint(${point.id})">Editar</button>
+            <button onclick="gpsSystem.deletePoint(${point.id})">Eliminar</button>
+          </div>
+        </div>
+      `
+            )
+            .join("");
+        }
+
+        editPoint(id) {
+          const point = this.points.find((p) => p.id === id);
+          if (!point) return;
+
+          const newLabel = prompt("Ingrese nueva etiqueta:", point.label);
+          if (newLabel !== null) {
+            point.label = newLabel;
+            this.updatePointsList();
+            localStorage.setItem("savedPoints", JSON.stringify(this.points));
+          }
+        }
+
+        deletePoint(id) {
+          if (confirm("¿Está seguro de eliminar este punto?")) {
+            this.points = this.points.filter((p) => p.id !== id);
+            this.updatePointsList();
+            localStorage.setItem("savedPoints", JSON.stringify(this.points));
+          }
+        }
+
+        exportData() {
+          const format = this.elements.exportFormat.value;
+          let content = "";
+          let filename = `gps-data-${new Date().toISOString().split("T")[0]}`;
+
+          switch (format) {
+            case "txt":
+              content = this.exportAsTXT();
+              filename += ".txt";
+              break;
+            case "gpx":
+              content = this.exportAsGPX();
+              filename += ".gpx";
+              break;
+            case "json":
+              content = this.exportAsJSON();
+              filename += ".json";
+              break;
+          }
+
+          const blob = new Blob([content], { type: "text/plain" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+
+        exportAsTXT() {
+          return this.points
+            .map(
+              (point) =>
+                `${point.label}\nLatitud: ${point.lat}\nLongitud: ${point.lng}\nElevación: ${point.elevation || "N/A"}\nFecha: ${point.timestamp.toLocaleString()}\n---`
+            )
+            .join("\n");
+        }
+
+        exportAsGPX() {
+          return `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="GPS System">
+  <metadata>
+    <time>${new Date().toISOString()}</time>
+  </metadata>
+  ${this.points
+    .map(
+      (point) => `
+  <wpt lat="${point.lat}" lon="${point.lng}">
+    <ele>${point.elevation || 0}</ele>
+    <time>${point.timestamp.toISOString()}</time>
+    <name>${point.label}</name>
+  </wpt>`
+    )
+    .join("")}
+</gpx>`;
+        }
+
+        exportAsJSON() {
+          return JSON.stringify(this.points, null, 2);
+        }
+
+        searchCoordinates() {
+          const input = this.elements.searchInput.value;
+          const coords = input
+            .split(",")
+            .map((coord) => parseFloat(coord.trim()));
+
+          if (coords.length !== 2 || isNaN(coords[0]) || isNaN(coords[1])) {
+            alert("Formato inválido. Use: latitud, longitud");
+            return;
+          }
+
+          const [lat, lng] = coords;
+          if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+            alert("Coordenadas fuera de rango");
+            return;
+          }
+
+          console.log(`Buscando coordenadas: ${lat}, ${lng}`);
+        }
+
+        handleError(error) {
+          console.error("Error GPS:", error);
+          this.elements.latitude.textContent = "Error";
+          this.elements.longitude.textContent = "Error";
+          this.elements.elevation.textContent = "Error";
+          this.elements.accuracy.textContent = "Error";
+          this.elements.signalStrength.className = "signal-error";
+          this.elements.utmEasting.textContent = "Error";
+          this.elements.utmNorthing.textContent = "Error";
+        }
+      }
+
+      // Initialize the GPS system
+      window.gpsSystem = new GPSSystem();
+    </script>
+
+    <style>
+      .gps-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+
+      .connection-status {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        text-align: center;
+        z-index: 1000;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      .connection-status.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .connection-status.online {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .connection-status.offline {
+        background-color: #f44336;
+        color: white;
+      }
+
+      .coordinates-panel {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .coordinates {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 15px;
+      }
+
+      .coordinate-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: #f5f5f5;
+        border-radius: 4px;
+      }
+
+      .signal-indicator {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #signal-strength {
+        width: 60px;
+        height: 20px;
+        border-radius: 10px;
+      }
+
+      .signal-excellent {
+        background: #4caf50;
+      }
+      .signal-good {
+        background: #8bc34a;
+      }
+      .signal-moderate {
+        background: #ffc107;
+      }
+      .signal-weak {
+        background: #ff5722;
+      }
+      .signal-error {
+        background: #f44336;
+      }
+
+      .tracking-panel {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .primary-button,
+      .secondary-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s;
+      }
+
+      .primary-button {
+        background: #2196f3;
+        color: white;
+      }
+
+      .primary-button:hover {
+        background: #1976d2;
+      }
+
+      .primary-button.active {
+        background: #f44336;
+      }
+
+      .secondary-button {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .secondary-button:hover {
+        background: #bdbdbd;
+      }
+
+      .track-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.1em;
+      }
+
+      .points-panel {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .points-list {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .point-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .point-actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .point-actions button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background: #e0e0e0;
+      }
+
+      .export-panel {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .export-panel select {
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+
+      .search-panel {
+        display: flex;
+        gap: 10px;
+      }
+
+      .search-panel input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+
+      @media (max-width: 600px) {
+        .coordinates {
+          grid-template-columns: 1fr;
+        }
+
+        .buttons {
+          flex-direction: column;
+        }
+
+        .track-info {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .point-item {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .export-panel,
+        .search-panel {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </body>
+</html>
